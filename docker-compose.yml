@@ -1,0 +1,54 @@
+name: push-notification
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - push_notification
+
+    
+  api:
+    build:
+      context: ./push-notification-system-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./push-notification-system-backend/.env
+    volumes:
+      - ./push-notification-system-backend:/app
+      - /app/node_modules
+    ports:
+      - 4000:4000
+    networks:
+      - push_notification
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./push-notification-system-frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./push-notification-system-frontend/.env
+    volumes:
+      - ./push-notification-system-frontend:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
+
+
+
+volumes:
+  mongo_data:
+networks:
+  push_notification:
+    driver: bridge
+  
+
+
+    
