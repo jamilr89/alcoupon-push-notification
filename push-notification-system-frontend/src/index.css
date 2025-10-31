@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+html,
+body,
+#root,
+.app,
+.content{
+  height: 100%;
+  width: 100%;
+  font-family: 'Source Sans 3', sans-serif ;
+}
+
+.app{
+  display: flex;
+  position: relative;
+}
+
+::-webkit-scrollbar{
+  width: 10px;
+}
+
+::-webkit-scrollbar-track{
+  background: #e0e0e0e0;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #888;
+}
+
+::-webkit-scrollbar-track:hover{
+  background:#555;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: inherit !important; /* Keeps original text color */
+    -webkit-box-shadow: 0 0 0 100px transparent inset !important; /* Removes background */
+    caret-color: auto !important; /* Ensures cursor color stays normal */
+    transition: all 9999s ease-in-out 9999s !important; /* Prevents future changes */
+}

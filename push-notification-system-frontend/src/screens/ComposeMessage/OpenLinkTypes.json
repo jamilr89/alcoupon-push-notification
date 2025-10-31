@@ -1,0 +1,30 @@
+[
+    {
+        "label":"Offer",
+        "value":"offer"
+    },
+    {
+        "label":"Store Offers",
+        "value":"store_offers"
+    },
+    {
+        "label":"Page",
+        "value":"page"
+    },
+    {
+        "label":"Direct Link",
+        "value":"direct_link"
+    },
+    {
+        "label":"Categories",
+        "value":"categories"
+    },
+    {
+        "label":"Top Coupons",
+        "value":"top_coupons"
+    },
+    {
+        "label":"Stores",
+        "value":"stores"
+    }
+]

@@ -1,0 +1,10 @@
+{
+    "notificationTitle":{
+        "good":30,
+        "acceptable":100
+    },
+     "notificationText":{
+        "good":100,
+        "acceptable":1024
+    }
+}

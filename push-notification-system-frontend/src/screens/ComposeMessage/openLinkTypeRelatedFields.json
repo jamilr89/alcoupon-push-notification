@@ -1,0 +1,42 @@
+
+{
+   
+    "offer":
+    [
+        {
+            "value":"nid",
+            "required":true
+        
+        },{
+            "value":"link",
+            "required":false
+        },{
+            "value":"open_link_type",
+            "required":false}],
+
+    "store_offers":[
+        {
+            "value":"nid",
+            "required":true
+        
+        },{
+            "value":"link",
+            "required":false
+        },{
+            "value":"open_link_type",
+            "required":false}
+    ],
+    "page":[
+        {"value":"type",
+        "required":true},
+        {"value":"nid",
+        "required":true}],
+    "direct_link":[
+        {"value":"link",
+        "required":true}
+    ],
+    "categories":[{"value":"nid",
+    "required":true}],
+    "top_coupons":[],
+    "stores":[]
+}
