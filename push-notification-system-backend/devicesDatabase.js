@@ -27,8 +27,8 @@ console.log("query "+query)
 const [rows]=await pool.query(query)
 console.log("devices list "+JSON.stringify(rows))
 return rows
-
 }
+                  
 
 export const getCountriesOptions=async ()=>{
    const query= `SELECT DISTINCT country
