@@ -20,8 +20,10 @@ services:
     volumes:
       - ./push-notification-system-backend:/app
       - /app/node_modules
-    ports:
-      - 4000:4000
+    expose:
+      - 4000
+    # ports:
+    #   - 4000:4000
     networks:
       - push_notification
     depends_on:
