@@ -6,8 +6,8 @@ console.log("MYSQL_PASSWORD_DEVICES_LIST "+process.env.MYSQL_PASSWORD_DEVICES_LI
 console.log("MYSQL_DATABASE_DEVICES_LIST "+process.env.MYSQL_DATABASE_DEVICES_LIST)
 
 const pool= mysql.createPool({
-    // host: process.env.MYSQL_HOST_DEVICES_LIST,
-    // port:process.env.MYSQL_PORT_DEVICES_LIST,
+    host: process.env.MYSQL_HOST_DEVICES_LIST,
+    port:process.env.MYSQL_PORT_DEVICES_LIST,
     user:process.env.MYSQL_USER_DEVICES_LIST,
     password:process.env.MYSQL_PASSWORD_DEVICES_LIST,
     database:process.env.MYSQL_DATABASE_DEVICES_LIST, 
