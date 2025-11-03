@@ -10,8 +10,16 @@ import {getDeviceData} from "../devicesDatabase.js"
 import blackListedTokens from "../models/blackListedTokens.js"
 import NotificationModel from '../models/notification.model.js';
 
+const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+
+if (!serviceAccountPath) {
+  // This error indicates the -e flag was missing from the docker run command
+  console.error("Configuration Error: FIREBASE_SERVICE_ACCOUNT_PATH is not defined.");
+  // Consider logging the entire process.env for debugging if this fails
+}
+
 const app = admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+  credential: admin.credential.cert(serviceAccountPath),
   projectId: 'alcoupon-webapp',
 });
 
