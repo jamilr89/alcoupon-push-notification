@@ -55,7 +55,7 @@ devicesRouter.get("/tokens",authMiddleWare,AuthorizeRole("admin","sender"),async
 })
 
 
-devicesRouter.post("/test_devices",authMiddleWare,AuthorizeRole("admin","sender"),async(req,res)=>{
+devicesRouter.post("/test_devices",async(req,res)=>{
     const {username,token,device_type}= req.query;
      try {
     if (!!token&&username){
