@@ -130,7 +130,10 @@ useEffect(()=>{
 
 const abortController = new AbortController();
   setLoadingTable(true);
-    
+    console.log("selectedNotifications changed "+JSON.stringify(selectedNotifications))
+    console.log("selectedCountries changed "+JSON.stringify(selectedCountries))
+    console.log("selectedLanguages changed "+JSON.stringify(selectedLanguages))
+    console.log("selectedOS changed "+JSON.stringify(selectedOS)) 
     const getData= async()=>{
 
 
