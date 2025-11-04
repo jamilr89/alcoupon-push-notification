@@ -224,7 +224,7 @@ if (response?.success==false)
       console.log("device data array "+JSON.stringify(deviceDataArray))
       const deviceData=deviceDataArray[0]
 console.log("device data "+JSON.stringify(deviceData))
-deviceData?
+deviceData&&id?
       await notificationReceivers.create({
         fcmId:resp?.messageId,
         notificationDbId:id,
