@@ -18,12 +18,13 @@ app.use(cookieParser());
 //allow other types of body data formats to be processed
 app.use(express.urlencoded({extended:false}))
 // console.log("getDevicesTokens "+JSON.stringify(getDevicesTokens("jo","ar","ios")))
- app.use('/refresh',refreshRouter)
+ app.use('/auth/refresh',refreshRouter)
+app.use('/auth/logout',logoutRouter)
  app.use('/api/notifications',notificationRouter)
  app.use('/api/devices',devicesRouter)
  app.use ('/auth',authRouter)
 
- app.use('/logout',logoutRouter)
+
 mongoose.connect('mongodb://mongo:27017/notification-system-db')
     .then(() => console.log('Connected!'));
 
