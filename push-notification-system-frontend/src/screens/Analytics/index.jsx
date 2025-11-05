@@ -355,10 +355,10 @@ initialValues={initialValues}
   // console.log("values "+JSON.stringify(values))
   //  console.log("Errors "+JSON.stringify(errors))
 
-  // setSelectedNotifications(values?.selectNotification)
-  // setSelectedCountries(values?.selectedCountries)
-  // setSelectedLanguages(values?.selectedLanguages)
-  // setSelectedOS(values?.selectedOS)
+  setSelectedNotifications((val)=>JSON.stringify(val)!==JSON.stringify(values?.selectNotification) ? values?.selectNotification : val)
+  setSelectedCountries((val)=>JSON.stringify(val)!==JSON.stringify(values?.selectedCountries) ? values?.selectedCountries : val)
+  setSelectedLanguages((val)=>JSON.stringify(val)!==JSON.stringify(values?.selectedLanguages) ? values?.selectedLanguages : val)
+  setSelectedOS((val)=>JSON.stringify(val)!==(values?.selectedOS) ? values?.selectedOS : val)
   
   
  return (<Form 
