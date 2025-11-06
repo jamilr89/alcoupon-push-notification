@@ -1,12 +1,17 @@
-FROM node:20
+FROM node:20 AS builder
+
+
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm i
+RUN npm ci --only=production 
 
 COPY . .
 
-CMD ["npm","run","build"]
 
+
+# CRUCIAL: Run the build command
+
+RUN npm run build

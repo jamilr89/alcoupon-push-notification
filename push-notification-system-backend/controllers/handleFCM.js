@@ -9,19 +9,21 @@ import notificationReceivers from '../models/sentNotificationsReceivers.model.js
 import {getDeviceData} from "../devicesDatabase.js"
 import blackListedTokens from "../models/blackListedTokens.js"
 import NotificationModel from '../models/notification.model.js';
-
-const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-
+let serviceAccountPath
+ serviceAccountPath= process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+console.log("service account path "+serviceAccountPath)
+let app;
 if (!serviceAccountPath) {
   // This error indicates the -e flag was missing from the docker run command
   console.error("Configuration Error: FIREBASE_SERVICE_ACCOUNT_PATH is not defined.");
   // Consider logging the entire process.env for debugging if this fails
-}
 
-const app = admin.initializeApp({
+
+app= admin.initializeApp({
   credential: admin.credential.cert(serviceAccountPath),
   projectId: 'alcoupon-webapp',
 });
+}
 
 const MAX_BATCH_SIZE = 500;
 
@@ -34,7 +36,7 @@ function chunkArray(tokens, size = MAX_BATCH_SIZE) {
   return chunks;
 }
 
-const messaging = admin.messaging(app);
+const messaging =app && admin.messaging(app);
 
 const analyticsDataClient = new BetaAnalyticsDataClient(); 
 
@@ -104,7 +106,7 @@ tokens: registrationToken
 
 // Send a message to the device corresponding to the provided
 // registration token.
-messaging.sendEachForMulticast(message)
+messaging?.sendEachForMulticast(message)
 .then(async(response) => {
 
 
@@ -193,7 +195,7 @@ for (const batch of batches) {
 
 
 
-  const response= await messaging.sendEachForMulticast(message)
+  const response= await messaging?.sendEachForMulticast(message)
   // .then(async(response) => {
     console.log("response from firebase "+JSON.stringify(response))
     if (response?.responses[0]?.success==true){
