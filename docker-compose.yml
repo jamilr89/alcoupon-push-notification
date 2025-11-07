@@ -43,8 +43,11 @@ services:
     restart: "no"
     env_file: ./push-notification-system-frontend/.env
     volumes:
-      - ./push-notification-system-frontend:/app
-      - /app/node_modules
+      - frontend_static_data:/app/build
+    
+      # - ./push-notification-system-frontend:/app
+      # - /app/node_modules
+
     ports:
       - 3000:3000
     depends_on:
@@ -70,6 +73,8 @@ services:
       - push_notification
 
 volumes:
+  frontend_static_data: 
+    driver: local # Optional, but good practice
   mongo_data:
 networks:
   push_notification:
