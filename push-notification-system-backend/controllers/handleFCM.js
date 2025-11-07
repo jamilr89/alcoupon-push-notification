@@ -17,7 +17,8 @@ if (!serviceAccountPath) {
   // This error indicates the -e flag was missing from the docker run command
   console.error("Configuration Error: FIREBASE_SERVICE_ACCOUNT_PATH is not defined.");
   // Consider logging the entire process.env for debugging if this fails
-
+}
+else{
 
 app= admin.initializeApp({
   credential: admin.credential.cert(serviceAccountPath),
