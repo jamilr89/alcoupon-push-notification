@@ -20,10 +20,15 @@ if (!serviceAccountPath) {
 }
 else{
 
+  try{
+
 app= admin.initializeApp({
   credential: admin.credential.cert(serviceAccountPath),
   projectId: 'alcoupon-webapp',
 });
+}catch(error){
+  console.log("error in firebase initialization "+error)  
+}
 }
 
 const MAX_BATCH_SIZE = 500;

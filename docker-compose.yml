@@ -29,8 +29,8 @@ services:
       NODE_ENV: production
     expose:
       - 4000
-    # ports:
-    #   - 4000:4000
+    ports:
+      - 4000:4000
     networks:
       - push_notification
     depends_on:
@@ -45,8 +45,8 @@ services:
     volumes:
       - frontend_static_data:/app/build
     
-      # - ./push-notification-system-frontend:/app
-      # - /app/node_modules
+      - ./push-notification-system-frontend:/app
+      - /app/node_modules
 
     ports:
       - 3000:3000
@@ -54,6 +54,14 @@ services:
       - api
     networks:
       - push_notification
+    # command: npm start
+
+
+  # nginx:
+  #   image: alpine/null # Use a dummy image
+  #   ports: []          # Remove host port binding
+  #   command: ["tail", "-f", "/dev/null"] # Keep it running but inactive
+  #   restart: "no"
 
   nginx:
     image: nginx

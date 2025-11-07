@@ -361,7 +361,9 @@ initialValues={initialValues}
   setSelectedOS((val)=>JSON.stringify(val)!==(values?.selectedOS) ? values?.selectedOS : val)
   
   
- return (<Form 
+ return (
+ 
+ <Form 
    onSubmit={handleSubmit}
   >
     <Box display="grid" gap="30px" gridTemplateColumns="repeat(4,minmax(0,1fr))"
@@ -417,7 +419,6 @@ initialValues={initialValues}
 <Box
 display="flex"
 height={"100%"}
-flex={1}
 justifyContent="center"
 alignItems={"center"}
 >

@@ -12,8 +12,15 @@ const pool= mysql.createPool({
     password:process.env.MYSQL_PASSWORD_DEVICES_LIST,
     database:process.env.MYSQL_DATABASE_DEVICES_LIST, 
 }).promise()
-// console.log("pool "+JSON.stringify(pool))
-
+//  console.log("pool "+JSON.stringify(pool))
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error("Error getting MySQL connection:", err);
+        return;
+    }
+    console.log("MySQL connection established");
+    connection.release();
+});
 
 
 export const getDevicesTokens=async(country,language,platform)=>{
