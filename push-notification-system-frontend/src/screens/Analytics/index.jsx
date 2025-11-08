@@ -329,7 +329,7 @@ setLoadingTable(false);
 
 if (loading) 
     return (
-<Box
+<div
 display="flex"
 height={"100%"}
 flex={1}
@@ -340,11 +340,11 @@ alignItems={"center"}
     <CircularProgress 
     color='grey'
     />
-</Box>)
+</div>)
 
     return (
     <div>
-<Box m="20px" >
+<div m="20px" >
 <Formik
 // onSubmit={handleFormSubmit}
 initialValues={initialValues}
@@ -413,10 +413,10 @@ initialValues={initialValues}
   )}
    }
  </Formik>
- </Box>
+ </div>
 
   {loadingTable?(
-<Box
+<div
 display="flex"
 height={"100%"}
 justifyContent="center"
@@ -426,12 +426,18 @@ alignItems={"center"}
     <CircularProgress 
     color='grey'
     />
-</Box>):
+</div>):
    <div>
-      <Box display="grid" gap="30px" gridTemplateColumns="repeat(3,minmax(0,1fr))"
+      <div display="grid" gap="30px" gridTemplateColumns="repeat(3,minmax(0,1fr))"
     // marginBottom={10}
     sx={{paddingBottom:3,
-      "& > div":{gridColumn: isNonMobile ? undefined:"span 3"},
+      "& > div":{gridColumn: isNonMobile ? undefined:"span 3",
+        minWidth: 0, 
+      // Manages overflow for text content
+      overflowWrap: 'break-word',
+      // Optional: Manages general overflow
+      overflowX: 'hidden',
+      },
     }}
     >
         {/* {JSON.stringify(languageChartData)} */}
@@ -470,7 +476,7 @@ alignItems={"center"}
       ]}
      sx={{gridColumn:"span 1"}}
     />}
-    </Box>
+    </div>
 
      <TableContainer component={Paper}>
       <Table>
