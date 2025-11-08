@@ -437,6 +437,7 @@ alignItems={"center"}
       overflowWrap: 'break-word',
       // Optional: Manages general overflow
       overflowX: 'hidden',
+      height: isNonMobile ?'300px' : 'auto',
       },
     }}
     >
