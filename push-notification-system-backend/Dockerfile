@@ -4,10 +4,9 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN rm -rf node_modules
-RUN rm -rf package-lock.json
 
-RUN npm i --clean
+
+RUN npm i 
 
 COPY . .
 
