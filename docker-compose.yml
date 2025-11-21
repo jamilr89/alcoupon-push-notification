@@ -21,8 +21,8 @@ services:
       # - /usr/src/app/node_modules
       - ./push-notification-system-backend:/app
       - /app/node_modules
-      - /Users/jamil/Downloads/alcoupon-webapp-firebase-adminsdk.json:/app/credentials/firebase-credentials.json:ro
-      # - ~/.secrets/firebase/alcoupon-webapp-firebase-adminsdk.json:/etc/secrets/firebase/key.json:ro
+      # - /Users/jamil/Downloads/alcoupon-webapp-firebase-adminsdk.json:/app/credentials/firebase-credentials.json:ro
+      - ~/.secrets/firebase/alcoupon-webapp-firebase-adminsdk.json:/etc/secrets/firebase/key.json:ro
     
     # 2. Environment Variable (Tells the app the file's path)
     environment:
@@ -38,7 +38,7 @@ services:
       - push_notification
     depends_on:
       - mongo
-    command: npm run dev
+    # command: npm run dev
 
   frontend:
     build:
@@ -48,7 +48,6 @@ services:
     env_file: ./push-notification-system-frontend/.env
     volumes:
       - frontend_static_data:/app/build
-    
       - ./push-notification-system-frontend:/app
       - /app/node_modules
 
@@ -58,7 +57,7 @@ services:
       - api
     networks:
       - push_notification
-    command: npm start
+    # command: npm start
 
 
   # nginx:
@@ -67,22 +66,22 @@ services:
   #   command: ["tail", "-f", "/dev/null"] # Keep it running but inactive
   #   restart: "no"
 
-  # nginx:
-  #   image: nginx
-  #   container_name: nginx
-  #   restart: always
-  #   ports:
-  #       - "80:80"
-  #       - "443:443"
-  #   volumes:
-  #     - frontend_static_data:/usr/share/nginx/html:ro
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-  #     - /etc/letsencrypt:/etc/letsencrypt:ro
-  #   depends_on:
-  #     - frontend
-  #     - api
-  #   networks:
-  #     - push_notification
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+      - frontend_static_data:/usr/share/nginx/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - frontend
+      - api
+    networks:
+      - push_notification
 
 volumes:
   frontend_static_data: 
