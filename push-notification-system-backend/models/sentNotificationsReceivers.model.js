@@ -20,6 +20,14 @@ const notificationReceiversScheme=new mongoose.Schema(
             type:String,
             required:[true,"please add notification name"]
         },
+        notificationTime:{
+            type:Date,
+            required:false
+        },
+        notificationTimezone:{
+            type:String,
+            required:false
+        },
         token:{
             type:String,
             required:[true,"please add token"]
@@ -34,8 +42,8 @@ const notificationReceiversScheme=new mongoose.Schema(
             required:false
         },
         errorCode:{
-type:String,
-required:false
+            type:String,
+            required:false
         },
         errorMessage:{
             type:String,

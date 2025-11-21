@@ -3,25 +3,36 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const register =async (req, res) => {
- try{   const {username,roles,password} = req.body;
+    console.log("Register request body:", req.body);
+    const {username,roles,password} = req.body;
+ try{   
 const hashedPassword = await bcrypt.hash(password,10);
-const newUSer =new User({username,password:hashedPassword,roles:(roles??["user"])});
-await newUSer.save();
+console.log("roles type "+typeof roles)
 
+const rolesArray= typeof roles === "string" ? JSON.parse(roles) : roles;
+const newUSer =new User({username,password:hashedPassword,roles:((!rolesArray||!rolesArray?.includes("user")) ? [...(rolesArray||[]) ,"user"]:rolesArray)});
+await newUSer.save();
+console.log(`User registered successfully: ${username}`);
    return res.status(201).json({message:`user registered ${username} successfully`});
 }
 catch(error){
+
+    if (error.code === 11000)
+        return res.status(500).json({message:`username ${username} is taken please use another username`});
+    console.error("Registration error:", error);
     return res.status(500).json({message:"Internal Server Error"});
 }
 };
 
 const login =async (req, res) => {
+    console.log("in auth controller login");
     try{const {username,password} = req.body;
     const user= await User.findOne({username})
     if (!user){
         return res.status(404).json({message:"User not found"});
     }
     const isMatch = await bcrypt.compare(password,user?.password);
+    console.log("isMatch "+isMatch);
 if (!isMatch){
     return res.status(400).json({message:"Invalid Credentials"});
 }
@@ -41,6 +52,12 @@ return res.status(200).json({token:jwtAccessToken,roles:user.roles,username:user
 
 }
 }
+
+
+
+
+
+
 export {
     register,
     login

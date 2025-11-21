@@ -13,6 +13,11 @@ const TestingDeviceScheme=new mongoose.Schema(
         device_type:{
             type:String,
             required:false
+        },
+        status:{
+            type:String,
+            enum:["active","inactive"],
+            default:"inactive"
         }
     }
 )

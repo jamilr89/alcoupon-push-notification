@@ -1,7 +1,7 @@
 import React, { use, useEffect, useState } from "react";
 import { PieChart } from '@mui/x-charts';
 import {  Form, Formik } from 'formik'
-import FormikSelect from '../ComposeMessage/FormikSelect';
+import FormikSelect from '../../components/FormikSelect.jsx';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery ,CircularProgress} from '@mui/material'
  
  import useAuth from '../../hooks/useAuth.js';
@@ -90,7 +90,7 @@ setLoading(true);
  
  isMounted&& setOsOptions(OSResponse?.data?.map((val)=>(
     {
-      value:val?.device_type,
+      value:"id_"+val?.device_type,
       label:val?.device_type
     })))
 }catch(error){
@@ -329,10 +329,9 @@ setLoadingTable(false);
 
 if (loading) 
     return (
-<div
+<Box
 display="flex"
 height={"100%"}
-flex={1}
 justifyContent="center"
 alignItems={"center"}
 >
@@ -340,10 +339,10 @@ alignItems={"center"}
     <CircularProgress 
     color='grey'
     />
-</div>)
+</Box>)
 
     return (
-    <div>
+    <div style={{margin:"20px"}}>
 <div m="20px" >
 <Formik
 // onSubmit={handleFormSubmit}
@@ -377,10 +376,10 @@ initialValues={initialValues}
    name="selectNotification"
    label="Campaign"
    options={notificationList}
-
-   
-
-   ></FormikSelect>
+   onBlur={handleBlur}
+      onChange={handleChange}
+      value={values.selectNotification}>
+</FormikSelect>
      <FormikSelect
      name="selectedOS"
      label="Operating System"
@@ -395,8 +394,8 @@ initialValues={initialValues}
         label="Language"
         options={languageOptions}
         onBlur={handleBlur}
-           onChange={handleChange}
-           value={values.selectLanguage}
+        onChange={handleChange}
+        value={values.selectedLanguages}
         ></FormikSelect>
          <FormikSelect
         name="selectedCountries"
@@ -428,16 +427,18 @@ alignItems={"center"}
     />
 </div>):
    <div>
-      <div display="grid" gap="30px" gridTemplateColumns="repeat(3,minmax(0,1fr))"
+      <Box display="grid" gap="30px" gridTemplateColumns="repeat(3,minmax(0,1fr))"
     // marginBottom={10}
     sx={{paddingBottom:3,
       "& > div":{gridColumn: isNonMobile ? undefined:"span 3",
         minWidth: 0, 
+        maxHeight: 250,
+        marginTop:2,
       // Manages overflow for text content
       overflowWrap: 'break-word',
       // Optional: Manages general overflow
-      overflowX: 'hidden',
-      height: isNonMobile ?'300px' : 'auto',
+      // overflowX: 'hidden',
+      // height: isNonMobile ?'300px' : 'auto',
       },
     }}
     >
@@ -454,7 +455,7 @@ alignItems={"center"}
         },
       ]}
       
-      sx={{gridColumn:"span 1"}}
+      sx={{gridColumn:"span 1",maxHeight:200}}
     />}
 
     {platformChartData&&<PieChart
@@ -465,7 +466,7 @@ alignItems={"center"}
           
         },
       ]}
-     sx={{gridColumn:"span 1"}}
+     sx={{gridColumn:"span 1",maxHeight:200}}
     />}
 
        {countryChartData&&<PieChart
@@ -475,9 +476,9 @@ alignItems={"center"}
           
         },
       ]}
-     sx={{gridColumn:"span 1"}}
+     sx={{gridColumn:"span 1",maxHeight:200}}
     />}
-    </div>
+    </Box>
 
      <TableContainer component={Paper}>
       <Table>
@@ -489,6 +490,7 @@ alignItems={"center"}
             }}
           >
             <TableCell>Campaign Name</TableCell>
+            <TableCell>Time</TableCell>
             <TableCell>Platform</TableCell>
             <TableCell>Language</TableCell>
             <TableCell>Country</TableCell>
@@ -499,6 +501,7 @@ alignItems={"center"}
               {tableAnalyticsData?.map((item)=>(
                 <TableRow>
                   <TableCell>{item?.notificationName}</TableCell>
+                  <TableCell>{item?.notificationTime ? `${new Date(item?.notificationTime).toLocaleString()} ${item?.notificationTimezone}` : 'N/A'}</TableCell>
                   <TableCell>{item?.platform}</TableCell>
                   <TableCell>{item?.language}</TableCell>
                   <TableCell>{item?.country}</TableCell>  

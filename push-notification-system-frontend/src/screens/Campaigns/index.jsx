@@ -25,6 +25,7 @@ setLoading(true);
     signal:abortController.signal
    });
     isMounted && setCampaigns(campaignsResult?.data)
+    setLoading(false);
   }catch(err){
     if(err.name==="AbortError"){
       console.log("fetch aborted")}
@@ -40,7 +41,7 @@ setLoading(true);
 
   //  const campaignJSON= await campaignsResult.json();
   //  console.log("campaigns result "+JSON.stringify(campaignJSON))
-   setLoading(false);
+   
 
   }
   
@@ -69,7 +70,7 @@ alignItems={"center"}
 
 
   return (
-    <div>
+    <div style={{margin:"20px"}}>
 <div style={{display:'flex',flexDirection:"row",justifyContent:"end",width:"100%"}}>
 <Button  
 variant="outlined" onClick={()=> navigate('/compose')} 

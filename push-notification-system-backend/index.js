@@ -4,12 +4,11 @@ import mongoose from 'mongoose'
 import notificationRouter from './routes/notification.route.js'
 import devicesRouter from './routes/devicesList.route.js'
 import refreshRouter from './routes/refreshToken.route.js'
-import logoutRouter from './routes/logout.route.js'
-import { getCountriesOptions, getDevicesTokens, getLanguagesOptions, getOSOptions } from './devicesDatabase.js'
 import authRouter from './routes/auth.route.js'
 import corsOptions from './config/corsOptions.js'
 import credentials from './middlewares/credentials.js'
 import cookieParser from 'cookie-parser';
+import usersRouter from './routes/users.route.js'
 const app =express()
 app.use(credentials);
 app.use(cors(corsOptions)); 
@@ -17,11 +16,13 @@ app.use(express.json())
 app.use(cookieParser());
 //allow other types of body data formats to be processed
 app.use(express.urlencoded({extended:false}))
+console.log("before routes")
 // console.log("getDevicesTokens "+JSON.stringify(getDevicesTokens("jo","ar","ios")))
  app.use('/auth/refresh',refreshRouter)
-app.use('/auth/logout',logoutRouter)
+// app.use('/auth/logout',logoutRouter)
  app.use('/api/notifications',notificationRouter)
  app.use('/api/devices',devicesRouter)
+ app.use('/api/users',usersRouter)
  app.use ('/auth',authRouter)
 
 

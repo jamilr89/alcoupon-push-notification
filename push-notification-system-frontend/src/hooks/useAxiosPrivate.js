@@ -21,7 +21,7 @@ useEffect (()=>{
 const responseIntercept= axiosPrivate.interceptors.response.use(
     response=> response,
     async (error) => {
-        console.log("error in response interceptor "+JSON.stringify(error?.response))   
+        console.log("error in response interceptor "+JSON.stringify(error))   
         const previousRequest =error?.config;
         if((error?.response?.status === 401||error?.response?.status === 403) && !previousRequest?.sent)
         {

@@ -14,6 +14,9 @@ import RequireAuth from "./components/RequireAuth";
 import UnauthorizedScreen from "./screens/Unauthorized";
 import MainLayout from "./components/MainLayout";
 import { Toaster } from "react-hot-toast";
+import CreateUserPage from "./screens/createUsers";
+import Users from "./screens/Users";
+
 function App() {
   const [theme,colorMode]= useMode();
   return (
@@ -43,6 +46,15 @@ function App() {
       <Route element={<RequireAuth allowedRoles={['admin']} />}>
       <Route path="/settings" element={<Settings/>}/>
       </Route>
+       <Route element={<RequireAuth allowedRoles={['superAdmin']} />}>
+      <Route path="/users" element={<Users/>}/>
+      </Route>
+      <Route element={<RequireAuth allowedRoles={['superAdmin']} />}>
+      <Route path="/create-user" element={<CreateUserPage/>}/>
+      <Route path="/edit-user/:id" element={<CreateUserPage/>}/>
+      </Route>
+         
+      
       <Route element={<RequireAuth allowedRoles={['admin','sender']} />}>
       <Route path="/compose" element={<ComposeMessage/>}/>
       </Route>

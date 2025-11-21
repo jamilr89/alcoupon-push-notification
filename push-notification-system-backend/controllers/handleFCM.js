@@ -8,7 +8,6 @@ import {BetaAnalyticsDataClient} from '@google-analytics/data'
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 import blackListedTokens from "../models/blackListedTokens.js"
-import NotificationModel from '../models/notification.model.js';
 let serviceAccountPath
  serviceAccountPath= process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
 console.log("service account path "+serviceAccountPath)
@@ -85,73 +84,72 @@ const deepLinkGenerator=(openType,nid,pageType,link,linkType)=>{
 
 
 const sendTestMessage=async({tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})=>{
-  if (open_type)
+
     sendMessageWithObject({tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
-  else
-  sendTextMessage({tokens,title,body})
+ 
 }
 
 
-const sendTextMessage=async({id,tokens,title,body})=>{
-  console.log("sending text message ")
-  if (tokens){
-  const registrationToken =JSON.parse (tokens);
-  // 'e7PwK8iUQ066C3jQRWF43M:APA91bHy_YHxDpxDo-8rYmP_7C1T_hYwJUpxik5GYy-4UssJtmWVHovbjjwBN9ugPluLL_u6Xu_aTaITPGy_t8ugLZJNCEjeyD03EomU13JlQ5tCCZ_-AM4';
+// const sendTextMessage=async({id,tokens,title,body,campaign_name,campaign_id,time=null,timezone=null})=>{
+//   console.log("sending text message ")
+//   if (tokens){
+//   const registrationToken =JSON.parse (tokens);
+//   // 'e7PwK8iUQ066C3jQRWF43M:APA91bHy_YHxDpxDo-8rYmP_7C1T_hYwJUpxik5GYy-4UssJtmWVHovbjjwBN9ugPluLL_u6Xu_aTaITPGy_t8ugLZJNCEjeyD03EomU13JlQ5tCCZ_-AM4';
 
-const message = {
-  "notification":{
-      "body":body,
-      "title":title
-    },
+// const message = {
+//   "notification":{
+//       "body":body,
+//       "title":title
+//     },
 
-tokens: registrationToken
-};
-
-
+// tokens: registrationToken
+// };
 
 
-// Send a message to the device corresponding to the provided
-// registration token.
-messaging?.sendEachForMulticast(message)
-.then(async(response) => {
 
 
-  console.log("response from firebase "+JSON.stringify(response))
+// // Send a message to the device corresponding to the provided
+// // registration token.
+// messaging?.sendEachForMulticast(message)
+// .then(async(response) => {
 
 
-//   response from firebase {"responses":[{"success":true,"messageId":"projects/alcoupon-webapp/messages/0:1748715006108013%db201482db201482"}],"successCount":1,"failureCount":0}
-// Error sending message: {}
-  if (response?.successCount&&response?.successCount>0){
-    // update status in database
-   !!id && await updateStatusField(id,"completed")
-   !!id && await updateSentCount(id , response?.successCount)
+//   console.log("response from firebase "+JSON.stringify(response))
 
 
-    //save fcm messageId in database
+// //   response from firebase {"responses":[{"success":true,"messageId":"projects/alcoupon-webapp/messages/0:1748715006108013%db201482db201482"}],"successCount":1,"failureCount":0}
+// // Error sending message: {}
+//   if (response?.successCount&&response?.successCount>0){
+//     // update status in database
+//    !!id && await updateStatusField(id,"completed")
+//    !!id && await updateSentCount(id , response?.successCount)
 
 
-  }
-if (response?.success==false)
-  {!!id && updateStatusField(id,"failed")}
-  // Response is a message ID string.
-  response.responses.forEach((resp, idx) => {
-    if (!resp.success) {
-      console.error(`Error for token ${message.tokens[idx]}:`, resp.error);
-    }
-  })
-.catch(error => console.error("Error sending messages:", error));
-  return response
-})
+//     //save fcm messageId in database
 
-.catch((error) => {
-  console.log('Error sending message:', error);
-  return null
-});
-  }
-  else console.log("no tokens in sendTextMessage")
-}
 
-const sendMessageWithObject=async({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})=>{
+//   }
+// if (response?.success==false)
+//   {!!id && updateStatusField(id,"failed")}
+//   // Response is a message ID string.
+//   response.responses.forEach((resp, idx) => {
+//     if (!resp.success) {
+//       console.error(`Error for token ${message.tokens[idx]}:`, resp.error);
+//     }
+//   })
+// .catch(error => console.error("Error sending messages:", error));
+//   return response
+// })
+
+// .catch((error) => {
+//   console.log('Error sending message:', error);
+//   return null
+// });
+//   }
+//   else console.log("no tokens in sendTextMessage")
+// }
+
+const sendMessageWithObject=async({id,tokens,title,body,campaign_name,campaign_id,time=null,timezone=null,open_type,nid,page_type,link,link_type})=>{
 
       const registrationToken =JSON.parse (tokens);
         console.log("send message object called "+typeof(registrationToken) + " " +registrationToken)
@@ -166,8 +164,10 @@ const filteredRegistrationTokens = (
 ).filter(token => token !== null); // remove nulls
   if (filteredRegistrationTokens?.length>0){
       const batches = chunkArray(filteredRegistrationTokens);
+      const allResponses = [];
+      const allTokens = [];
 for (const batch of batches) {
-  
+  console.log("batch "+JSON.stringify(batch))
   const deepLink= deepLinkGenerator(open_type,nid,page_type,link,link_type)
   console.log("deep link from generator "+deepLink)
   const message = {
@@ -190,11 +190,11 @@ for (const batch of batches) {
     "data":{
       "campaign_name":campaign_name ,
       "campaign_id": campaign_id,
-        "type":"deep_link",
-         "deep_link_url":deepLink
+      ...(open_type&&{"type":"deep_link"}),
+      ...(open_type&&{"deep_link_url":deepLink})
       },
   
-  tokens: filteredRegistrationTokens
+  tokens: batch
   };
   console.log("message in fcm "+JSON.stringify(message))
   !!id && updateStatusField(id,"sending")
@@ -204,31 +204,68 @@ for (const batch of batches) {
   const response= await messaging?.sendEachForMulticast(message)
   // .then(async(response) => {
     console.log("response from firebase "+JSON.stringify(response))
-    if (response?.responses[0]?.success==true){
+    if (response?.successCount&&response?.successCount>0){
       // update status in database
      !!id && await updateStatusField(id,"completed")
      !!id && await updateSentCount(id , response?.successCount)
       //save fcm messageId in database
 
     }
-    
-if (response?.success==false)
-    {!!id && updateStatusField(id,"failed")}
+allResponses.push(...response.responses)
+
+    console.log("response success count "+response?.successCount)
+
+  // .catch(error => console.error("Error sending messages:", error));
+    // return response
+    allTokens.push(...batch);
+  }
+  console.log("all responses "+JSON.stringify(allResponses))
+  return {allResponses,allTokens};
+}
+  // .catch((error) => {
+  //   console.log('Error sending message:', JSON.stringify(error));
+  //   // !! error?.message&& updateStatusField(id,"failed")
+    // return null
+  }
+
+
+
+
+const schedulePN= ({id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})=>{
+  
+  const cronTime = convertToCronTime(time);
+  console.log("crone time "+cronTime)
+  try{
+
+  cron.schedule(cronTime, async() => {
+    console.log("called in crone")
+  //  sendTestMessage(tokens,title,body);
+  let response;
+  // if (open_type)
+  response=await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,time,timezone,open_type,nid,page_type,link,link_type})
+  // console.log("response from scheduled message with object "+JSON.stringify(response))
+//   }
+//   else
+// response= await sendTextMessage({id,tokens,title,body,campaign_name,campaign_id,time,timezone})
+console.log("response from scheduled message "+JSON.stringify(response))
+
+// if (response?.success==false)
+//     {!!id && updateStatusField(id,"failed")}
     // Response is a message ID string.
-    response.responses.forEach(async(resp, idx) => {
+    response.allResponses?.forEach(async(resp, idx) => {
       if (!resp.success) {
-        console.error(`Error for token ${message?.tokens[idx]}:`, JSON.stringify(resp));
+        console.error(`Error for token ${response?.allTokens[idx]}:`, JSON.stringify(resp));
         if (resp?.error?.code === "messaging/registration-token-not-registered")
        { blackListedTokens.create({
-          token:message?.tokens[idx]
+          token:response?.allTokens[idx]
         })}
       }
       else{
         console.log("response in success "+JSON.stringify(resp))
-        console.log("token in success "+message?.tokens[idx])
+        console.log("token in success "+response?.allTokens[idx])
   
       
-      const deviceDataArray=await getDeviceData(message?.tokens[idx])
+      const deviceDataArray=await getDeviceData(response?.allTokens[idx])
       console.log("device data array "+JSON.stringify(deviceDataArray))
       const deviceData=deviceDataArray[0]
 console.log("device data "+JSON.stringify(deviceData))
@@ -238,7 +275,9 @@ deviceData&&id?
         notificationDbId:id,
         notificationId:campaign_id,
         notificationName:campaign_name,
-        token:message?.tokens[idx],
+        notificationTime:time,
+        notificationTimezone:timezone,
+        token:response?.allTokens[idx],
         success:resp?.success,
         deviceId:deviceData?.device_id,
         language:deviceData?.language,
@@ -252,35 +291,6 @@ deviceData&&id?
       console.log("no device data ")
     
     }})
-  // .catch(error => console.error("Error sending messages:", error));
-    // return response
-  }
-}
-  // .catch((error) => {
-  //   console.log('Error sending message:', JSON.stringify(error));
-  //   // !! error?.message&& updateStatusField(id,"failed")
-    // return null
-  }
-
-
-
-
-const schedulePN= ({id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})=>{
-  console.log("time text "+time)
-  // const targetDate = new Date(time); // March 18, 2025, 14:30 (2:30 PM) 2025-03-18T14:30:00
-  // console.log("targetDate "+JSON.stringify( targetDate))
-  console.log("time zone "+timezone)
-  const cronTime = convertToCronTime(time);
-  console.log("crone time "+cronTime)
-  try{
-
-  cron.schedule(cronTime, () => {
-    console.log("called in crone")
-  //  sendTestMessage(tokens,title,body);
-  if (open_type)
-  sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
-else
-sendTextMessage({id,tokens,title,body})
    
   }, {
     scheduled: true,
@@ -432,6 +442,8 @@ const tableAnalytics = await notificationReceivers.aggregate([
       _id: {
         notificationDbId: "$notificationDbId",
         notificationName:"$notificationName",
+        notificationTime:"$notificationTime",
+        notificationTimezone:"$notificationTimezone",
         platform: "$platform",
         language: "$language",
         country: "$country"
@@ -444,6 +456,8 @@ const tableAnalytics = await notificationReceivers.aggregate([
       _id: 0,
       notificationDbId: "$_id.notificationDbId",
       notificationName:"$_id.notificationName",
+      notificationTime:"$_id.notificationTime",
+      notificationTimezone:"$_id.notificationTimezone",
       platform: "$_id.platform",
       language: "$_id.language",
       country: "$_id.country",
@@ -474,4 +488,4 @@ return {
 }
 }
 
-export {sendTestMessage,sendTextMessage,schedulePN,getMessageMetrics,getNotificationAnalyticsFromDb};
+export {sendTestMessage,schedulePN,getMessageMetrics,getNotificationAnalyticsFromDb};

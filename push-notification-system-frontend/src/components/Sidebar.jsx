@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {Sidebar, Menu,MenuItem, sidebarClasses} from "react-pro-sidebar"
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import  MenuOutlinedIcon  from '@mui/icons-material/MenuOutlined';
+import GroupIcon from '@mui/icons-material/Group';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { Box, collapseClasses, IconButton, Typography, useTheme } from '@mui/material';
@@ -159,6 +160,16 @@ selected={selected}
 setSelected={setSelected}
 title="Settings"
 to="/settings"
+/>
+
+<Item
+icon={<GroupIcon/>}
+isCollapsed={isCollapsed}
+setIsCollapsed={setIsCollapsed}
+selected={selected}
+setSelected={setSelected}
+title="Users"
+to="/users"
 />
 
 

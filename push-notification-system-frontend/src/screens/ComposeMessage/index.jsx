@@ -2,9 +2,8 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
 import { Field, Form, Formik } from 'formik'
 import * as yup from "yup"
-import { Box, Button, FormLabel, TextField, useMediaQuery,CircularProgress,Alert
- } from '@mui/material'
-import FormikSelect from './FormikSelect'
+import { Box, Button,TextField, useMediaQuery,CircularProgress, Typography} from '@mui/material'
+import FormikSelect from '../../components/FormikSelect'
 import { DateTimePicker} from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import openTypes from "./OpenLinkTypes.json"
@@ -177,6 +176,7 @@ const axiosPrivate = useAxiosPrivate();
  const [loadingSend,setLoadingSend]=useState(false)
  const [loadingTest,setLoadingTest]= useState (false)
  const [loadingData,setLoadingData]= useState (false)
+ const [errorText,setErrorText]=useState([])
 //  const [timezone, setTimezone] = useState(null);
  const bottomButtonRef=useRef(null);
 const isNonMobile=useMediaQuery("(min-width:600px)")
@@ -302,10 +302,10 @@ const getNotificationParams=async(values)=>{
   params.set("campaign_name",values?.notificationName);
   params.set("campaign_id",values?.notificationName?.trim().toLowerCase().replace(/\s+/g, '_'))
   values?.openTypes&&params.set("open_type",values?.openTypes)
-  values?.nidField&&params.set("nid",values?.nidField)
-  values?.pageType&&params.set("page_type",values?.pageType)
-  values?.link&&params.set("link",values?.linkField)
-  values?.linkTypeField&&params.set("link_type",values?.linkTypeField)
+  values?.openTypes&&values?.nidField&&params.set("nid",values?.nidField)
+  values?.openTypes&&values?.pageType&&params.set("page_type",values?.pageType)
+  values?.openTypes&&values?.link&&params.set("link",values?.linkField)
+  values?.openTypes&&values?.linkTypeField&&params.set("link_type",values?.linkTypeField)
 
   
 
@@ -335,7 +335,7 @@ setLoadingTest(true)
     // const token="e7PwK8iUQ066C3jQRWF43M:APA91bHy_YHxDpxDo-8rYmP_7C1T_hYwJUpxik5GYy-4UssJtmWVHovbjjwBN9ugPluLL_u6Xu_aTaITPGy_t8ugLZJNCEjeyD03EomU13JlQ5tCCZ_-AM4"
  params.set("tokens", JSON.stringify(tokens))
 
-    if (values?.selectedLanguage?.some(item=>item.value.includes("en"))&&values?.notificationTitle&&values?.notificationText){
+    if (values?.selectedLanguage?.includes("en")&&values?.notificationTitle&&values?.notificationText){
       params.set("title",values?.notificationTitle)
       params.set("body",values?.notificationText)
     // url.search = params.toString();
@@ -415,31 +415,51 @@ const params =await getNotificationParams(values)
 
 
 
+const responses=[];
 
-
-  if (values?.selectedLanguage?.some(item=>item.value.includes("en")))
+  if (values?.selectedLanguage?.includes("en"))
     {
     
       params.set("languages",["en"])
       params.set('title',values?.notificationTitle);
       params.set('body',values?.notificationText);
-
+ setLoadingSend(true) 
+ try{
+      const sendResponse =await axiosPrivate.get("api/notifications/send_pn",{params})
+      responses.push(sendResponse.data)
+console.log("send response" +JSON.stringify(sendResponse.data))
+ }
+ catch(error){
+   setErrorText("send English Notification failed: "+error.response?.data?.message || "An error occurred")
+return;
+ }
       // url.search = params.toString();
 
       // console.log("url send pn "+url)
       
       //  await axiosPrivate.get("api/notifications/send_pn",{params})
     }
+
     
-    if (values?.selectedLanguage?.some(item=>item.value.includes("ar")))
+    if (values?.selectedLanguage?.includes("ar"))
       {
        
         params.set('title',values?.notificationTitleArabic);
         params.set('body',values?.notificationTextArabic);
         params.set("languages",["ar"])
       
+     setLoadingSend(true) 
+     setErrorText(null)
+     try{
+      const sendResponse =await axiosPrivate.get("api/notifications/send_pn",{params})
+      responses.push(sendResponse.data)
       
-      
+     }
+     catch(error){
+setErrorText("send Arabic Notification failed: "+error.response?.data?.message || "An error occurred")
+return;
+     }
+    }
       
 //         url.search = params.toString();
 
@@ -447,24 +467,18 @@ const params =await getNotificationParams(values)
 
 //  await fetch(url)
 
+    
+  
 
 
-}
-  setLoadingSend(true)
-  console.log("params of send pn "+params)
 
-const sendResponse =await axiosPrivate.get("api/notifications/send_pn",{params})
-console.log("send response" +JSON.stringify(sendResponse.data))
-if (sendResponse?.data?.status==="success") 
-  {
-    handleGoBack() 
+  handleGoBack() 
     toast.success('Scheduled successfully!')
-  }
   
  setLoadingSend(false)
 
 
-
+}
 }
 
 
@@ -473,7 +487,7 @@ if (sendResponse?.data?.status==="success")
 
 
     
-}
+
   return (
     <Box m="20px">
 
@@ -498,15 +512,18 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
       "& > div":{gridColumn: isNonMobile ? undefined:"span 4"},
     }}>
          <FormikSelect
-         loading={loadingData}
+    loading={loadingData}
    name="selectedLanguage"
    label="Language"
    options={languageOptions}
+    onBlur={handleBlur}
+      onChange={handleChange}
+      value={values.selectedLanguage}
    ></FormikSelect>
        <h1
     style={{gridColumn:"span 4"}}
     >Text</h1>
- {!!values?.selectedLanguage?.some(item => item.value.includes("ar"))&&
+ {!!values?.selectedLanguage?.includes("ar")&&
 <TextField
       fullWidth
       
@@ -531,7 +548,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
                 </span>
       }
       ></TextField>}
-      {!!values?.selectedLanguage?.some(item => item.value.includes("ar"))&&
+      {!!values?.selectedLanguage?.includes("ar")&&
       <TextField
       fullWidth
       variant='filled'
@@ -557,7 +574,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
       ></TextField>}
 
 
-    {!!values?.selectedLanguage?.some(item => item.value.includes("en"))&&
+    {!!values?.selectedLanguage?.includes("en")&&
       <TextField 
       fullWidth
       variant='filled'
@@ -580,7 +597,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
                 </span>
       }
       ></TextField>}
-       {!!values?.selectedLanguage?.some(item => item.value.includes("en"))&&
+       {!!values?.selectedLanguage?.includes("en")&&
          <TextField
       fullWidth
       variant='filled'
@@ -624,20 +641,20 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
   &&
   (
   (
-    !values?.selectedLanguage?.some(item => item.value.includes("en"))
+    !values?.selectedLanguage?.includes("en")
     ||
     (
-      values?.selectedLanguage?.some(item => item.value.includes("en"))
+      values?.selectedLanguage?.includes("en")
       &&values?.notificationTitle
       &&values.notificationText
     )
 )
 &&
   ( 
-  !values?.selectedLanguage?.some(item => item.value.includes("ar")) 
+  !values?.selectedLanguage?.includes("ar")
   ||
   (
-    values?.selectedLanguage?.some(item => item.value.includes("ar"))
+    values?.selectedLanguage?.includes("ar")
     &&!errors?.notificationTitleArabic
     &&!errors?.notificationTextArabic
   )
@@ -701,9 +718,12 @@ loadingTest={loadingTest}
 
 <FormikSelect
 loading={loadingData}
-   name="selectedCountries"
-   label="Countries"
-   options={countriesOptions}
+    name="selectedCountries"
+    label="Countries"
+    options={countriesOptions}
+    onBlur={handleBlur}
+    onChange={handleChange}
+    value={values.selectedCountries}
    ></FormikSelect>
 
 <h1
@@ -749,6 +769,8 @@ loading={loadingData}
        label="Timezone"
       onChange={handleChange}
        options={getTimeZonesArray()}
+       onBlur={handleBlur}
+    value={values.selectedTimezone}
        ></FormikSelect>
             </Box>
 
@@ -764,6 +786,9 @@ loading={loadingData}
    label="Type"
   //  value={values.openTypes}
    options={openTypes}
+   onBlur={handleBlur}
+    onChange={handleChange}
+    value={values.openTypes}
       // onChange={(e)=>{handleChange(e);setOpenType(values?.openTypes)}}
    ></FormikSelect>
    {!!values?.openTypes&& openLinkTypeRelatedFields[values?.openTypes]?.some(field => field.value === "type")&&
@@ -832,11 +857,18 @@ loading={loadingData}
    {loadingSend?<CircularProgress 
        color='grey'
        />:
+       <Box sx={{display:"flex",alignItems:"center",gap:2}}>
+       {errorText&& <Typography>
+          {errorText}
+           </Typography>}
     <Button 
       type="submit"
       variant="contained" 
       sx={{ boxShadow: "none", "&:hover": { boxShadow: "none" } ,marginBottom:10,width:200,background:"#7CACF8",color:"#203F72"}}
-    ref={bottomButtonRef} >Submit</Button>}
+    ref={bottomButtonRef} >Submit</Button>
+     </Box>
+    }
+   
   </Form>
 )}}
 </Formik>
@@ -844,5 +876,6 @@ loading={loadingData}
     </Box>
   )
 }
+
 
 export default memo(ComposeMessage)

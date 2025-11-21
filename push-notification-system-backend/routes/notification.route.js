@@ -1,13 +1,15 @@
 import express from 'express'
 import NotificationModel from '../models/notification.model.js';
-import {schedulePN, sendTestMessage, sendTextMessage,getMessageMetrics,getNotificationAnalyticsFromDb } from '../controllers/handleFCM.js'
+import {schedulePN, sendTestMessage,getNotificationAnalyticsFromDb } from '../controllers/handleFCM.js'
 import authMiddleWare from '../middlewares/authMiddleWare.js';
 import AuthorizeRole from '../middlewares/roleMiddleWare.js';
 
 
 const notificationRouter =express.Router();
+console.log("in notification route")
 notificationRouter.get('/get_analytics',authMiddleWare,AuthorizeRole("admin","analyst"),async (req,res)=>{
-    // console.log("req in analytics "+JSON.stringify(req))
+    console.log("in get analytics")
+    //  console.log("req in analytics "+JSON.stringify(req))
     try {
         
         const {notification_ids,languages,countries,os}=req.query
@@ -25,7 +27,7 @@ catch(error){
     console.log("notification analytics error"+error)
     return res.status(500).json({message:error?.message})
 }})
-notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender"),async(req,res)=>{
+notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender","superAdmin"),async(req,res)=>{
     try {
         const {tokens,body,title,campaign_name,campaign_id,open_type,nid,page_type,link,link_type}=req.query;
         const response=await sendTestMessage({tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
@@ -36,8 +38,8 @@ notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender"),as
         
     }
 })
-    
-    notificationRouter.get('/send_pn',authMiddleWare,AuthorizeRole("admin","sender"),async (req,res)=>{
+
+    notificationRouter.get('/send_pn',authMiddleWare,AuthorizeRole("admin","sender","superAdmin"),async (req,res)=>{
         try {
             const {tokens,body,title,campaign_name,campaign_id,time,timezone,os,languages,countries,open_type,nid,page_type,link,link_type}=req.query;
             console.log("operating system "+JSON.stringify(os))
@@ -69,7 +71,7 @@ notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender"),as
         }
      })
 
-notificationRouter.get('/',authMiddleWare,AuthorizeRole("admin","user"),async(req,res)=>{
+notificationRouter.get('/',authMiddleWare,AuthorizeRole("admin","user","superAdmin"),async(req,res)=>{
     try{
         console.log("in notifications")
         const notifications= await NotificationModel.find({}).sort({time:-1})
@@ -82,7 +84,7 @@ notificationRouter.get('/',authMiddleWare,AuthorizeRole("admin","user"),async(re
 
     }
 })
-notificationRouter.get('/:id',authMiddleWare,AuthorizeRole("admin","user"),async(req,res)=>{
+notificationRouter.get('/:id',authMiddleWare,AuthorizeRole("admin","user","superAdmin"),async(req,res)=>{
     try{
         const {id}= req.params;
         const notification= await NotificationModel.findById(id)
@@ -96,7 +98,7 @@ notificationRouter.get('/:id',authMiddleWare,AuthorizeRole("admin","user"),async
     }
 })
 
-notificationRouter.post('/',authMiddleWare,AuthorizeRole("admin","user"),async(req,res)=>{
+notificationRouter.post('/',authMiddleWare,AuthorizeRole("admin","user","superAdmin"),async(req,res)=>{
     try{
      const notification=await NotificationModel.create(req?.body);
      res.status(200).json(notification)
@@ -109,7 +111,7 @@ notificationRouter.post('/',authMiddleWare,AuthorizeRole("admin","user"),async(r
 
 
 
- notificationRouter.put ('/:id',authMiddleWare,AuthorizeRole("admin","sender"),async(req,res)=>{
+ notificationRouter.put ('/:id',authMiddleWare,AuthorizeRole("admin","sender","superAdmin"),async(req,res)=>{
      try {
          const {id}=req.params;
          const notification=await NotificationModel.findByIdAndUpdate(id,req.body)
@@ -123,8 +125,8 @@ notificationRouter.post('/',authMiddleWare,AuthorizeRole("admin","user"),async(r
      }
  })
 
- notificationRouter.delete('/:id',authMiddleWare,AuthorizeRole("admin","sender"),async(req,res)=>{
-     
+ notificationRouter.delete('/:id',authMiddleWare,AuthorizeRole("admin","sender","superAdmin"),async(req,res)=>{
+
      try {
          const {id}=req.params;
          const notification= await NotificationModel.findByIdAndDelete(id)
