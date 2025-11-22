@@ -26,6 +26,8 @@ services:
     
     # 2. Environment Variable (Tells the app the file's path)
     environment:
+      - PORT=4000
+      - NODE_ENV=production
       # This is the path INSIDE the container that the Node.js app reads
       - FIREBASE_SERVICE_ACCOUNT_PATH=/app/credentials/firebase-credentials.json
       # FIREBASE_SERVICE_ACCOUNT_PATH: /etc/secrets/firebase/key.json 
