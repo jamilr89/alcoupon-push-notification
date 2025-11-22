@@ -1,4 +1,9 @@
-import { check, validationResult } from 'express-validator';
+import * as expressValidator from 'express-validator';
+
+// Then destructure the required functions from the imported object
+const { check, validationResult } = expressValidator;
+
+
 
 // We define a list of common, weak, or breached passwords to reject
 const blacklistedWords = ['password', '123456', 'qwerty'];
