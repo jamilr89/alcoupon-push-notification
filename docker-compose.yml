@@ -20,7 +20,7 @@ services:
     volumes:
       # - /usr/src/app/node_modules
       - ./push-notification-system-backend:/app
-      - /app/node_modules
+      - nodemodules:/app/node_modules
       # - /Users/jamil/Downloads/alcoupon-webapp-firebase-adminsdk.json:/app/credentials/firebase-credentials.json:ro
       - ~/.secrets/firebase/alcoupon-webapp-firebase-adminsdk.json:/etc/secrets/firebase/key.json:ro
     
@@ -89,6 +89,9 @@ volumes:
   frontend_static_data: 
     driver: local # Optional, but good practice
   mongo_data:
+    driver: local
+  nodemodules:
+    driver: local
 networks:
   push_notification:
     driver: bridge
