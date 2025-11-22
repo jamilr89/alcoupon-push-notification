@@ -65,7 +65,7 @@ services:
   frontend:
     build:
       context: ./push-notification-system-frontend
-      dockerfile: Dockerfile.frontend # <-- CORRECTED to use the multi-stage Dockerfile
+      dockerfile: Dockerfile
     restart: "no"
     env_file: ./push-notification-system-frontend/.env
     volumes:
