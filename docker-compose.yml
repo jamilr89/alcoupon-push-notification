@@ -106,10 +106,12 @@ services:
       - push_notification
 
 volumes:
-  frontend_static_data: 
-    driver: local # Optional, but good practice
+  frontend_nodemodules:
+    driver: local
   mongo_data:
     driver: local
+  frontend_static_data: 
+    driver: local 
   nodemodules:
     driver: local
 networks:
