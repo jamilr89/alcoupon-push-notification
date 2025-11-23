@@ -43,7 +43,7 @@ WORKDIR /app
 
 # Copy the compiled static files from the 'builder' stage
 # Adjust 'dist' if your build output folder is different (e.g., 'build')
-COPY --from=builder /app/dist ./dist 
+COPY --from=builder /app/build ./build  
 
 # Expose the port where the static server will listen
 EXPOSE 3000
