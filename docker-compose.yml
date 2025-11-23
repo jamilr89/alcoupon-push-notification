@@ -61,22 +61,31 @@ services:
     # command: npm start
 
 
+  # frontend:
+  #   build:
+  #     context: ./push-notification-system-frontend
+  #     dockerfile: Dockerfile
+  #   restart: "no"
+  #   env_file: ./push-notification-system-frontend/.env
+  #   # volumes:
+  #     # CRITICAL: Host mount for source code changes (Dev)
+  #     # - ./push-notification-system-frontend:/app 
+  #     # Named volume to ensure node_modules are preserved (Dev)
+  #     # - frontend_nodemodules:/app/node_modules # Using a named volume for consistency
+  #     # NOTE: The conflicting 'frontend_static_data:/app/build' volume was removed.
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - push_notification
+
   frontend:
     build:
       context: ./push-notification-system-frontend
       dockerfile: Dockerfile
     restart: "no"
     env_file: ./push-notification-system-frontend/.env
-    # volumes:
-      # CRITICAL: Host mount for source code changes (Dev)
-      # - ./push-notification-system-frontend:/app 
-      # Named volume to ensure node_modules are preserved (Dev)
-      # - frontend_nodemodules:/app/node_modules # Using a named volume for consistency
-      # NOTE: The conflicting 'frontend_static_data:/app/build' volume was removed.
-    ports:
-      - 3000:3000
-    depends_on:
-      - api
     networks:
       - push_notification
 
