@@ -91,13 +91,13 @@ services:
 
   nginx:
     image: nginx
-    container_name: nginx
-    restart: always
+    container_name: nginx:stable-alpine
+    restart: unless-stopped
     ports:
         - "80:80"
         - "443:443"
     volumes:
-      - frontend_static_data:/usr/share/nginx/html:ro
+      # - frontend_static_data:/usr/share/nginx/html:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
@@ -107,12 +107,9 @@ services:
       - push_notification
 
 volumes:
-  frontend_nodemodules:
-    driver: local
+
   mongo_data:
     driver: local
-  frontend_static_data: 
-    driver: local 
   nodemodules:
     driver: local
 networks:
