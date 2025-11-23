@@ -14,7 +14,7 @@
 
 # RUN npm run build
 
-FROM node:18.20.2-alpine as builder
+FROM node:18.20.2-alpine AS builder
 
 WORKDIR /app
 
