@@ -456,6 +456,7 @@ return;
       
      }
      catch(error){
+      
 setErrorText("send Arabic Notification failed: "+error.response?.data?.message || "An error occurred")
 return;
      }
@@ -473,7 +474,7 @@ return;
 
 
   handleGoBack() 
-    toast.success('Scheduled successfully!')
+  toast.success('Scheduled successfully!')
   
  setLoadingSend(false)
 
