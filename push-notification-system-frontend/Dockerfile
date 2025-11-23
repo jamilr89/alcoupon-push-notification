@@ -10,12 +10,15 @@
 
 # COPY . .
 
-
 # ----------------------------------------------------------------------
 # Stage 1: Builder Stage
 # Installs dependencies and compiles the frontend application
 # ----------------------------------------------------------------------
-FROM node:18.20.2-alpine as builder
+# ----------------------------------------------------------------------
+# Stage 1: Builder Stage
+# Installs dependencies and compiles the frontend application
+# ----------------------------------------------------------------------
+FROM node:18.20.2-alpine AS builder
 
 WORKDIR /app
 # Copy package files first to leverage Docker cache for npm install
@@ -23,9 +26,9 @@ COPY package.json package-lock.json ./
 RUN npm install
 # Copy remaining source code
 COPY . .
-# Run the build command
+# Run the build command (creates /app/build)
 RUN npm run build
-# The compiled static files are now ready at /app/dist (or /app/build) inside this layer.
+# The compiled static files are now ready at /app/build inside this layer.
 
 # ----------------------------------------------------------------------
 # Stage 2: Production/Runtime Stage (NGINX)
@@ -33,8 +36,9 @@ RUN npm run build
 # ----------------------------------------------------------------------
 FROM nginx:alpine
 
-# CRITICAL FIX: Changed the source folder to /app/dist 
-# This copies the compiled static files from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy the compiled static files from the 'builder' stage's /app/build folder
+# NGINX's default serving path is /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html
 
+# Expose NGINX's default port (80)
 EXPOSE 80
