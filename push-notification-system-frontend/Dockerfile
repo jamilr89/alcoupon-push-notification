@@ -15,6 +15,9 @@ FROM node:18.20.2-alpine AS builder
 
 WORKDIR /app
 
+ARG API_URL
+ARG FRONTEND_URL
+
 # Install dependencies
 COPY package.json package-lock.json ./
 RUN npm install
