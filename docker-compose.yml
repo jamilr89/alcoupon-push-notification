@@ -84,10 +84,14 @@ services:
     build:
       context: ./push-notification-system-frontend
       dockerfile: Dockerfile
+      args:
+        - API_URL=http://api:4000
+        - FRONTEND_URL=http://frontend:3000
     restart: "no"
     env_file: ./push-notification-system-frontend/.env
     networks:
       - push_notification
+    
 
  
 
