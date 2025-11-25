@@ -33,7 +33,7 @@ FROM nginx:stable-alpine AS runtime
 
 # Remove default conf and copy our config
 RUN rm /etc/nginx/conf.d/default.conf
-COPY ../nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY /nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the built static files from builder
 COPY --from=builder /app/build /usr/share/nginx/html
