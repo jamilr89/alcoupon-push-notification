@@ -20,7 +20,7 @@ ARG FRONTEND_URL
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci --only=production
 
 # Copy source and build
 COPY . .
