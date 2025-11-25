@@ -17,6 +17,11 @@ services:
       - api_source:/app       
       # 3. Permanent named volume for dependencies
       - nodemodules:/app/node_modules 
+
+    environment:
+      # This is the path INSIDE the container that the Node.js app reads
+      # FIREBASE_SERVICE_ACCOUNT_PATH: /etc/secrets/firebase/key.json
+      - FIREBASE_SERVICE_ACCOUNT_PATH=/app/credentials/firebase-credentials.json
       
     # CRITICAL FIX: The initial copy operation is now part of the command.
     # It copies the source code from the temporary host mount to the permanent named volume (/app)
@@ -121,7 +126,7 @@ volumes:
 #       - NODE_ENV=production
 #       # This is the path INSIDE the container that the Node.js app reads
 #       - FIREBASE_SERVICE_ACCOUNT_PATH=/app/credentials/firebase-credentials.json
-#       # FIREBASE_SERVICE_ACCOUNT_PATH: /etc/secrets/firebase/key.json 
+      # FIREBASE_SERVICE_ACCOUNT_PATH: /etc/secrets/firebase/key.json 
 #       # NODE_ENV: production
 #     expose:
 #       - 4000
