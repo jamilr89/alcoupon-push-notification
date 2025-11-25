@@ -25,16 +25,15 @@ RUN npm install
 # Copy source and build
 COPY . .
 RUN REACT_APP_API_URL=$API_URL \
-RUN REACT_APP_FRONTEND_URL=$FRONTEND_URL \
-
-RUN npm run build
+REACT_APP_FRONTEND_URL=$FRONTEND_URL \
+npm run build
 
 # Stage 2 — nginx serving static files
 FROM nginx:stable-alpine AS runtime
 
 # Remove default conf and copy our config
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ../nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the built static files from builder
 COPY --from=builder /app/build /usr/share/nginx/html
