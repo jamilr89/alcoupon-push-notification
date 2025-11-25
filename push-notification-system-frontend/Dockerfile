@@ -57,7 +57,7 @@ COPY . .
 # to be recognized by the frontend framework.
 # Note: Since the backend is accessible at /api/ (via the reverse proxy), 
 # the API URL during build should usually be empty or just '/'.
-ARG API_URL=/api
+ARG API_URL=http://api:4000/
 
 # Pass the ARG to the shell environment and then run the build
 RUN API_URL=$API_URL npm run build

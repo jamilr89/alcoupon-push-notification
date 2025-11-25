@@ -29,7 +29,8 @@ services:
     # on the first run, then starts the API.
     command: sh -c "cp -r /tmp/source/. /app && npm start"
     # --- End Isolation Fix ---
-    
+    ports:
+      - 4000:4000
     expose:
       - 4000
     networks:
