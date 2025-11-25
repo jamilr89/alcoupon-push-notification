@@ -70,7 +70,7 @@ FROM nginx:alpine
 
 # CRITICAL STEP: Copy the built files from the 'builder' stage 
 # into the NGINX default serving directory.
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html
 
 # Expose port 80 as the internal application port
 EXPOSE 80
