@@ -17,6 +17,7 @@ services:
       - api_source:/app       
       # 3. Permanent named volume for dependencies
       - nodemodules:/app/node_modules 
+      - ~/.secrets/firebase/alcoupon-webapp-firebase-adminsdk.json:/etc/secrets/firebase/key.json:ro
 
     environment:
       # This is the path INSIDE the container that the Node.js app reads
