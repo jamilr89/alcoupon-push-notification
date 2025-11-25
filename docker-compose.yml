@@ -88,9 +88,12 @@ services:
         - API_URL=http://api:4000
         - FRONTEND_URL=http://frontend:3000
     restart: "no"
-    env_file: ./push-notification-system-frontend/.env
+    image: myapp/nginx:prod
+    # env_file: ./push-notification-system-frontend/.env
     networks:
       - push_notification
+    depends_on:
+      - api
     
 
  
@@ -102,23 +105,23 @@ services:
   #   command: ["tail", "-f", "/dev/null"] # Keep it running but inactive
   #   restart: "no"
 
-  nginx:
-    image: nginx:stable-alpine
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-        - "80:80"
-        - "443:443"
-    volumes:
-      # - frontend_static_data:/usr/share/nginx/html:ro
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./push-notification-system-frontend/build:/usr/share/nginx/html:ro
-    depends_on:
-      - frontend
-      - api
-    networks:
-      - push_notification
+  # nginx:
+  #   image: nginx:stable-alpine
+  #   container_name: nginx
+  #   restart: unless-stopped
+  #   ports:
+  #       - "80:80"
+  #       - "443:443"
+  #   volumes:
+  #     # - frontend_static_data:/usr/share/nginx/html:ro
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - /etc/letsencrypt:/etc/letsencrypt:ro
+  #     - ./push-notification-system-frontend/build:/usr/share/nginx/html:ro
+  #   depends_on:
+  #     - frontend
+  #     - api
+  #   networks:
+  #     - push_notification
 
 volumes:
 
