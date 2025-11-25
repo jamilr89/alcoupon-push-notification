@@ -5,16 +5,23 @@ services:
   api:
     build:
       context: ./push-notification-system-backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.backend
     restart: unless-stopped
     env_file: ./push-notification-system-backend/.env
-    # --- Source Code Isolation Fix Maintained ---
+    
+    # --- Source Code and Dependency Isolation Fix ---
     volumes:
-      - api_source:/app
-      - nodemodules:/app/node_modules
+      # 1. Mount host source code temporarily for the copy operation
+      - ./push-notification-system-backend:/tmp/source:ro 
+      # 2. Permanent named volume for source code (target of copy)
+      - api_source:/app       
+      # 3. Permanent named volume for dependencies
+      - nodemodules:/app/node_modules 
+      
+    # CRITICAL FIX: The initial copy operation is now part of the command.
+    # It copies the source code from the temporary host mount to the permanent named volume (/app)
+    # on the first run, then starts the API.
     command: sh -c "cp -r /tmp/source/. /app && npm start"
-    volumes_from:
-      - container:api_copy_source
     # --- End Isolation Fix ---
     
     expose:
@@ -23,7 +30,6 @@ services:
       - push_notification
     depends_on:
       - mongo
-
   # Helper service to copy source code (Path remains correct)
   api_copy_source:
     image: busybox
