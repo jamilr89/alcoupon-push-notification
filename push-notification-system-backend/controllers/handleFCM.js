@@ -4,7 +4,7 @@ import cron from 'node-cron'
 import { convertToCronTime } from '../utilities.js';
 import testingDevice from '../models/testingDevices.model.js';
 import { updateStatusField,updateSentCount } from '../notificationDbController.js';
-import {BetaAnalyticsDataClient} from '@google-analytics/data'
+
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 import blackListedTokens from "../models/blackListedTokens.js"
@@ -43,7 +43,7 @@ function chunkArray(tokens, size = MAX_BATCH_SIZE) {
 
 const messaging =app && admin.messaging(app);
 
-const analyticsDataClient = new BetaAnalyticsDataClient(); 
+
 
 const deepLinkGenerator=(openType,nid,pageType,link,linkType)=>{
   console.log("open type "+openType)
