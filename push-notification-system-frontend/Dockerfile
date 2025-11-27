@@ -45,20 +45,20 @@
 FROM node:18.20.2-alpine AS builder
 
 WORKDIR /app
-# Install dependencies
+# Install full dependencies required for building (not production-only)
 COPY package.json package-lock.json ./
-RUN npm install
-# Copy source code and build
+RUN npm ci --only=production
+
+# Copy source code
 COPY . .
 
-# CRITICAL FIX: Set build-time environment variables before running the build.
-# EXAMPLE: Injecting the API URL into the React/Vue/Angular build process.
-# This variable must be prefixed correctly (e.g., REACT_APP_, VUE_APP_) 
-# to be recognized by the frontend framework.
-# Note: Since the backend is accessible at /api/ (via the reverse proxy), 
-# the API URL during build should usually be empty or just '/'.
+# Build-time arg → env for CRA (must be REACT_APP_ prefix)
 ARG API_URL=http://api:4000/
 ENV REACT_APP_API_URL=${API_URL}
+
+# Reduce memory/CPU pressure during build on small servers
+ENV NODE_OPTIONS=--max_old_space_size=1024
+ENV GENERATE_SOURCEMAP=false
 
 RUN npm run build
 # The compiled static files are now ready at /app/dist
@@ -68,10 +68,7 @@ RUN npm run build
 # ----------------------------------------------------------------------
 FROM nginx:alpine
 
-# CRITICAL STEP: Copy the built files from the 'builder' stage 
-# into the NGINX default serving directory.
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Expose port 80 as the internal application port
 EXPOSE 80
 
