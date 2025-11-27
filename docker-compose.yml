@@ -49,8 +49,7 @@ services:
     build:
       context: ./push-notification-system-frontend
       dockerfile: Dockerfile
-      args:
-        API_URL: "http://api:4000/"   # optional only for build
+    restart: "no"
     image: push-frontend:latest
    
     expose:
