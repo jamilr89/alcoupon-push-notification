@@ -58,9 +58,9 @@ COPY . .
 # Note: Since the backend is accessible at /api/ (via the reverse proxy), 
 # the API URL during build should usually be empty or just '/'.
 ARG API_URL=http://api:4000/
+ENV REACT_APP_API_URL=${API_URL}
 
-# Pass the ARG to the shell environment and then run the build
-RUN API_URL=$API_URL npm run build
+RUN npm run build
 # The compiled static files are now ready at /app/dist
 
 # ----------------------------------------------------------------------

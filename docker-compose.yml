@@ -49,6 +49,8 @@ services:
     build:
       context: ./push-notification-system-frontend
       dockerfile: Dockerfile # <--- RENAMED (Was Dockerfile.frontend)
+      args:
+        API_URL: "http://api:4000/"
     restart: unless-stopped
     expose:
       - 80
@@ -56,6 +58,7 @@ services:
       - push_notification
     depends_on:
       - api
+    
 
   # ... (mongo and nginx-proxy services remain unchanged) ...
   mongo:
