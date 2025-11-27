@@ -42,7 +42,7 @@
 # CMD ["nginx", "-g", "daemon off;"]
 
 
-FROM node:18.20.2-alpine as builder
+FROM node:18.20.2-alpine AS builder
 
 WORKDIR /app
 # Install dependencies
