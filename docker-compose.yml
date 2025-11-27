@@ -48,12 +48,13 @@ services:
   frontend:
     build:
       context: ./push-notification-system-frontend
-      dockerfile: Dockerfile # <--- RENAMED (Was Dockerfile.frontend)
+      dockerfile: Dockerfile
       args:
-        API_URL: "http://api:4000/"
-    restart: unless-stopped
+        API_URL: "http://api:4000/"   # optional only for build
+    image: push-frontend:latest
+   
     expose:
-      - 80
+      - "80"
     networks:
       - push_notification
     depends_on:
@@ -234,7 +235,6 @@ volumes:
 # networks:
 #   push_notification:
 #     driver: bridge
-  
 
 
-    
+
