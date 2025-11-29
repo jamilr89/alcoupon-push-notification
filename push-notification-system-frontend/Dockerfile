@@ -53,8 +53,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Build-time arg → env for CRA (must be REACT_APP_ prefix)
-ARG API_URL=http://api:4000/
-ENV REACT_APP_API_URL=${API_URL}
+
 
 # Reduce memory/CPU pressure during build on small servers
 ENV NODE_OPTIONS=--max_old_space_size=1024
@@ -67,6 +66,7 @@ RUN npm run build
 # Stage 2: Production/Runtime Stage (Serves the files via NGINX)
 # ----------------------------------------------------------------------
 FROM nginx:alpine
+
 
 COPY --from=builder /app/build /usr/share/nginx/html
 

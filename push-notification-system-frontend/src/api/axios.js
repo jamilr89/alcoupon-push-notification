@@ -1,6 +1,9 @@
 import axios from "axios";
-const BASE_URL='/'
-console.log("BASE_URL:",BASE_URL)
+
+// prefer REACT_APP_API_URL if provided, otherwise use same-origin
+const BASE_URL = '/';
+console.log("BASE_URL:", BASE_URL);
+
 
 export default axios.create({
     baseURL: BASE_URL
