@@ -66,9 +66,11 @@ RUN npm run build
 # Stage 2: Production/Runtime Stage (Serves the files via NGINX)
 # ----------------------------------------------------------------------
 FROM nginx:alpine
-
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/build /usr/share/nginx/html
 
 EXPOSE 80
 
+CMD ["nginx", "-g", "daemon off;"]
