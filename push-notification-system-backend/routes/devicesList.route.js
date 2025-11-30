@@ -64,9 +64,12 @@ devicesRouter.get("/tokens",authMiddleWare,AuthorizeRole("admin","sender","super
 
 devicesRouter.post("/test_devices",async(req,res)=>{
     console.log("in add testing device route")
+    console.log("query params "+JSON.stringify(req.query))  
     const {username,token,device_type}= req.query;
+    console.log("username "+username+" token "+token+" device_type "+device_type)
      try {
     if (!!token&&username){
+        console.log("creating testing device")
         const result = TestingDevice.create({
             username:username,
             token:token,
