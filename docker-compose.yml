@@ -51,9 +51,7 @@ services:
       dockerfile: Dockerfile
     restart: "no"
     image: push-frontend:latest
-    
-    expose:
-      - "80"
+
     networks:
       - push_notification
     depends_on:
