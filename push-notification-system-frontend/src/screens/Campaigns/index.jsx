@@ -73,7 +73,7 @@ alignItems={"center"}
     <div style={{margin:"20px"}}>
 <div style={{display:'flex',flexDirection:"row",justifyContent:"end",width:"100%"}}>
 <Button  
-variant="outlined" onClick={()=> navigate('messages/compose')} 
+variant="outlined" onClick={()=> navigate('/messages/compose')} 
 sx=
 {{
   display:"flex",

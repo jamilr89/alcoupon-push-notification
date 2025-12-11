@@ -58,7 +58,7 @@ function App() {
          
       
       <Route element={<RequireAuth allowedRoles={['admin','sender']} />}>
-      <Route path="messages/compose" element={<ComposeMessage/>}/>
+      <Route path="/messages/compose" element={<ComposeMessage/>}/>
       </Route>
       <Route path="/unauthorized" element={<UnauthorizedScreen/>}/>
  </Route>
