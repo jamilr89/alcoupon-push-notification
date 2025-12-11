@@ -49,13 +49,15 @@ services:
     build:
       context: ./push-notification-system-frontend
       dockerfile: Dockerfile
-    restart: "no"
+    restart: always
     image: push-frontend:latest
-
+    container_name: frontend
+    
     networks:
       - push_notification
     depends_on:
       - api
+    mem_limit: 256m
     
 
   # ... (mongo and nginx-proxy services remain unchanged) ...
