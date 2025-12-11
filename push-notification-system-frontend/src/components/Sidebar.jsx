@@ -14,7 +14,7 @@ import { useLocation } from 'react-router-dom';
 
 const Item = ({ title, to, icon,  isCollapsed,setIsCollapsed}) => {
    const location = useLocation();
-   const isActive = location.pathname === to;
+   const isActive = location.pathname.startsWith(to);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -144,7 +144,7 @@ isCollapsed={isCollapsed}
 setIsCollapsed={setIsCollapsed}
 
 title="Messages"
-to="/"
+to="/messages"
 />
 
 

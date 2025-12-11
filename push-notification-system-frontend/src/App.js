@@ -16,6 +16,7 @@ import MainLayout from "./components/MainLayout";
 import { Toaster } from "react-hot-toast";
 import CreateUserPage from "./screens/createUsers";
 import Users from "./screens/Users";
+import { Navigate } from "react-router-dom";
 
 function App() {
   const [theme,colorMode]= useMode();
@@ -38,7 +39,8 @@ function App() {
       
       <Route element={<MainLayout />} >
       <Route element={<RequireAuth allowedRoles={['user']} />}>
-      <Route path="/" element={<Campaigns/>} />
+      <Route path="/" element={<Navigate to="/messages" replace />} />
+      <Route path="/messages" element={<Campaigns/>} />
       </Route>
       <Route element={<RequireAuth allowedRoles={['admin','analyst']} />}>
       <Route path="/analytics" element={<AnalyticsScreen/>}/>
@@ -50,13 +52,13 @@ function App() {
       <Route path="/users" element={<Users/>}/>
       </Route>
       <Route element={<RequireAuth allowedRoles={['superAdmin']} />}>
-      <Route path="/create-user" element={<CreateUserPage/>}/>
+      <Route path="/users/create-user" element={<CreateUserPage/>}/>
       <Route path="/edit-user/:id" element={<CreateUserPage/>}/>
       </Route>
          
       
       <Route element={<RequireAuth allowedRoles={['admin','sender']} />}>
-      <Route path="/compose" element={<ComposeMessage/>}/>
+      <Route path="messages/compose" element={<ComposeMessage/>}/>
       </Route>
       <Route path="/unauthorized" element={<UnauthorizedScreen/>}/>
  </Route>
