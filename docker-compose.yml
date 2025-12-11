@@ -51,8 +51,7 @@ services:
       dockerfile: Dockerfile
     restart: "no"
     image: push-frontend:latest
-    ports:
-      - 80:80
+    
     expose:
       - "80"
     networks:
