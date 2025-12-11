@@ -53,7 +53,7 @@ function App() {
       </Route>
       <Route element={<RequireAuth allowedRoles={['superAdmin']} />}>
       <Route path="/users/create-user" element={<CreateUserPage/>}/>
-      <Route path="/edit-user/:id" element={<CreateUserPage/>}/>
+      <Route path="/users/edit-user/:id" element={<CreateUserPage/>}/>
       </Route>
          
       

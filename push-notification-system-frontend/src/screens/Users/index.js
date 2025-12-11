@@ -58,7 +58,7 @@ alignItems={"center"}
     <div style={{margin:"20px"}}>
 <div style={{display:'flex',flexDirection:"row",justifyContent:"end",width:"100%"}}>
 <Button  
-variant="outlined" onClick={()=> navigate('users/create-user')} 
+variant="outlined" onClick={()=> navigate('/users/create-user')} 
 sx=
 {{
   display:"flex",
@@ -126,7 +126,7 @@ sx=
                   variant="outlined"
                   color="text.primary"
                   size="small"
-                  onClick={() => navigate(`/edit-user/${item?._id}`)}
+                  onClick={() => navigate(`/users/edit-user/${item?._id}`)}
                 >
                   Edit
                 </Button>
