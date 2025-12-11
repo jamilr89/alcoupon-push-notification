@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {Sidebar, Menu,MenuItem, sidebarClasses} from "react-pro-sidebar"
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import  MenuOutlinedIcon  from '@mui/icons-material/MenuOutlined';
@@ -9,17 +9,20 @@ import { Box, collapseClasses, IconButton, Typography, useTheme } from '@mui/mat
 import {Link}from "react-router"
 import {tokens} from "../theme"
 import { Padding } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 
 
-const Item = ({ title, to, icon, selected, setSelected , isCollapsed,setIsCollapsed}) => {
+const Item = ({ title, to, icon,  isCollapsed,setIsCollapsed}) => {
+   const location = useLocation();
+   const isActive = location.pathname === to;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
      <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}> 
     <MenuItem 
-    style={{ backgroundColor: selected === title ? colors.primary[500] : 'transparent',}} // Default background color}}
-    active={selected===title}
-     onClick={() => setSelected(title)}
+    style={{ backgroundColor: isActive? colors.primary[500] : 'transparent',}} // Default background color}}
+    active={isActive}
+    //  onClick={() => setSelected(title)}
     icon={icon}
     >
      
@@ -41,10 +44,15 @@ const Item = ({ title, to, icon, selected, setSelected , isCollapsed,setIsCollap
 
 
 export const SideBar = () => {
+ 
   const theme=useTheme();
   const colors= tokens(theme.palette.mode)
   const [isCollapsed,setIsCollapsed]=useState(false);
-  const [selected,setSelected]=useState("Dashboard") 
+
+
+
+
+
   return (
 
 <Box
@@ -134,8 +142,7 @@ menuItemStyles={{
 icon={<ForwardToInboxIcon/>}
 isCollapsed={isCollapsed}
 setIsCollapsed={setIsCollapsed}
-selected={selected}
-setSelected={setSelected}
+
 title="Messages"
 to="/"
 />
@@ -145,8 +152,6 @@ to="/"
 icon={<ShowChartIcon/>}
 isCollapsed={isCollapsed}
 setIsCollapsed={setIsCollapsed}
-selected={selected}
-setSelected={setSelected}
 title="Analytics"
 to="/analytics"
 />
@@ -156,8 +161,6 @@ to="/analytics"
 icon={<SettingsIcon/>}
 isCollapsed={isCollapsed}
 setIsCollapsed={setIsCollapsed}
-selected={selected}
-setSelected={setSelected}
 title="Settings"
 to="/settings"
 />
@@ -166,8 +169,6 @@ to="/settings"
 icon={<GroupIcon/>}
 isCollapsed={isCollapsed}
 setIsCollapsed={setIsCollapsed}
-selected={selected}
-setSelected={setSelected}
 title="Users"
 to="/users"
 />
