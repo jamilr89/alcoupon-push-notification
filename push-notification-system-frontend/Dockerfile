@@ -46,7 +46,7 @@ FROM node:18.20.2-alpine AS builder
 
 WORKDIR /app
 # Install full dependencies required for building (not production-only)
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .
 RUN npm ci --only=production
 
 # Copy source code
@@ -67,10 +67,16 @@ RUN npm run build
 # ----------------------------------------------------------------------
 FROM nginx:alpine
 
-
 COPY --from=builder /app/build /usr/share/nginx/html
+# EXPOSE 80
 
-EXPOSE 80
+
+# FROM nginx:alpine
 
 
-CMD ["nginx", "-g", "daemon off;"]
+# COPY --from=builder /app/build /usr/share/nginx/html
+
+# EXPOSE 80
+
+
+# CMD ["nginx", "-g", "daemon off;"]
