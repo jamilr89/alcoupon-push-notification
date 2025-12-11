@@ -49,10 +49,9 @@ services:
     build:
       context: ./push-notification-system-frontend
       dockerfile: Dockerfile
-    restart: always
     image: push-frontend:latest
     container_name: frontend
-    
+    restart: "no"
     networks:
       - push_notification
     depends_on:
