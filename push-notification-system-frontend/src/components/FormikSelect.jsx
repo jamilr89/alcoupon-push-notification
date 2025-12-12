@@ -15,6 +15,7 @@ const FormikSelect = ({ label, options, multiple = true, loading = false, ...pro
   const [field, meta, helpers] = useField(props);
   const { name, onBlur, value } = field;
   const { error, touched } = meta;
+  console.log('FormikSelect Props:', { name, value, options, multiple });
 
   // The Formik value (field.value) should be an array of primitive IDs (e.g., ['id1', 'id2'])
 
@@ -28,7 +29,7 @@ const FormikSelect = ({ label, options, multiple = true, loading = false, ...pro
       // 2. If single, take the primitive value (ID) of the single selected option object
       finalValue = selectedOptions ? selectedOptions.value : null;
     }
-
+console.log('Handle Change:', { selectedOptions, finalValue });
     // Set the cleaned value (array of IDs or single ID) in Formik
     helpers.setValue(finalValue);
   };
@@ -41,7 +42,7 @@ const FormikSelect = ({ label, options, multiple = true, loading = false, ...pro
   const autocompleteValue = multiple
     ? options.filter(option => field?.value?.includes(option?.value))
     : options.find(option => option?.value === field?.value) || null;
-
+console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue });
 
   return (
     <FormControl fullWidth error={!!touched && !!error} sx={{ gridColumn: "span 2" }}>
