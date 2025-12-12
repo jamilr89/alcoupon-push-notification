@@ -60,8 +60,11 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
         // Key fix: isOptionEqualToValue ensures the internal logic matches options to values
         isOptionEqualToValue={(option, val) => option.value === val.value} 
 
-        renderOption={(props, option, { selected }) => (
-          <li {...props} key={option?.value}>
+        renderOption={(props, option, { selected }) => 
+          {
+            console.log('Render Option:', { option, selected ,fieldValue: field.value });
+
+          return(<li {...props} key={option?.value}>
             {multiple &&
               <Checkbox
                 icon={<CheckBoxOutlineBlankIcon />}
@@ -72,8 +75,8 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
               />
             }
             {option?.label ?? option?.value}
-          </li>
-        )}
+          </li>)}
+        }
         
         onChange={handleChange}
         
@@ -104,4 +107,4 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
   );
 };
 
-export default FormikSelect;
+export default memo(FormikSelect);
