@@ -71,7 +71,7 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
                 checkedIcon={<CheckBoxIcon />}
                 color='text.primary'
                 // The check logic must compare the option's value with the Formik value (array of IDs)
-                checked={field?.value?.includes(option?.value)}
+                checked={field?.value?.includes(option?.value)||selected}
               />
             }
             {option?.label ?? option?.value}
