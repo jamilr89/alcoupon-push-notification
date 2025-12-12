@@ -10,11 +10,20 @@ const handleRefreshToken=async(req,res)=>{
         return res.status(401).json({message:"No refresh token provided"});
     }
 
-    const foundUser = await User.findOne({refreshToken});
+    const foundUser = await User.findOne({'sessions.refreshToken': refreshToken});
         console.log("found user with refresh token:",JSON.stringify(foundUser));
     if(!foundUser){
         return res.status(403).json({message:"Forbidden"});
     }
+    const session = foundUser.sessions.find(
+            s => s.refreshToken === refreshToken
+        );
+
+        if (!session) {
+            // This should not happen if the first query matched, but is a safe guard.
+            return res.status(403).json({message:"Forbidden"});
+        }
+
 
     jwt.verify(refreshToken,process.env.JWT_REFRESH_SECRET,(err,decoded)=>{
         console.log("decoded in refresh token",decoded);
@@ -23,7 +32,7 @@ const handleRefreshToken=async(req,res)=>{
         }
 
         console.log("user in refresh token",foundUser);
-        const accessToken=jwt.sign({id:foundUser._id,roles:foundUser.roles},process.env.JWT_ACCESS_SECRET,{expiresIn:"5min"});
+        const accessToken=jwt.sign({id:foundUser._id,roles:foundUser.roles,deviceId:session?.deviceId},process.env.JWT_ACCESS_SECRET,{expiresIn:"15min"});
         console.log ("access token in refresh " + accessToken)
        return res.status(200).json({token:accessToken,roles:foundUser?.roles,username:foundUser?.username});
     })

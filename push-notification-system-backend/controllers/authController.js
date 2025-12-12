@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const register =async (req, res) => {
     console.log("Register request body:", req.body);
@@ -36,14 +37,62 @@ const login =async (req, res) => {
 if (!isMatch){
     return res.status(400).json({message:"Invalid Credentials"});
 }
-const jwtAccessToken = jwt.sign({id:user._id,roles:user.roles},process.env.JWT_ACCESS_SECRET,{expiresIn:"5min"});
-const jwtRefreshToken = jwt.sign({id:user._id},process.env.JWT_REFRESH_SECRET,{expiresIn:"1d"});
-console.log("user id "+user?._id); 
 
-try{  await User.updateOne({_id:user?._id},{ $set: { "refreshToken": jwtRefreshToken } })
-}catch(err){
-            console.log("error while storing refresh token",err);}
-            res.cookie("refreshToken",jwtRefreshToken,{httpOnly:true,sameSite: 'Strict',maxAge:1*24*60*60*1000,secure:false});
+
+const newJwtRefreshToken = jwt.sign({id:user._id},process.env.JWT_REFRESH_SECRET,{expiresIn:"15d"});
+const refreshToken = req.cookies?.refreshToken;
+if (refreshToken) {
+    console.log("Existing refresh token found in cookies during login.");
+     const foundUser = await User.findOne({'sessions.refreshToken': refreshToken});
+    if (foundUser) {
+          const session = foundUser.sessions.find(
+            s => s.refreshToken === refreshToken
+        );
+
+        console.log("Found user with existing refresh token during login. Removing old session.");
+        await User.updateOne(
+            { "_id": foundUser?._id, "sessions.deviceId": session?.deviceId },
+  { 
+    "$set": {
+      "sessions.$[session].refreshToken": newJwtRefreshToken,
+      // ... other session details to update
+    }
+  },
+  { "arrayFilters": [{ "session.deviceId": session?.deviceId }] }
+        );
+    }
+    // Optionally, you might want to verify and invalidate the existing refresh token here.
+    // For simplicity, we'll just log it.
+}
+else
+{
+    try { 
+        const newSession = {
+        deviceId: crypto.randomUUID(),
+        refreshToken: newJwtRefreshToken,
+        userAgent: req.get('User-Agent') || 'Unknown Device',
+        ipAddress: req.ip,
+        createdAt: new Date(),
+        lastUsed: new Date(),
+        // ... all other session details
+    };
+    await User.updateOne(
+        { "_id": user?._id },
+        { "$push": { "sessions": newSession } }
+    );} catch (error) {
+        console.error("Error creating new session during login:", error);
+        return res.status(500).json({message:"Internal Server Error"});
+    }
+
+
+}
+
+const jwtAccessToken = jwt.sign({id:user._id,roles:user.roles},process.env.JWT_ACCESS_SECRET,{expiresIn:"15min"});
+
+
+
+
+            res.cookie("refreshToken",newJwtRefreshToken,{httpOnly:true,sameSite: 'Strict',maxAge:1*24*60*60*1000,secure:false});
             console.log("login successful for user:",username);
 return res.status(200).json({token:jwtAccessToken,roles:user.roles,username:user.username});
 }catch(error){
