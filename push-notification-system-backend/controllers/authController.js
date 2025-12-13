@@ -40,6 +40,7 @@ if (!isMatch){
 
 
 const newJwtRefreshToken = jwt.sign({id:user._id},process.env.JWT_REFRESH_SECRET,{expiresIn:"15d"});
+let deviceId ;
 const refreshToken = req.cookies?.refreshToken;
 if (refreshToken) {
     console.log("Existing refresh token found in cookies during login.");
@@ -48,6 +49,7 @@ if (refreshToken) {
           const session = foundUser.sessions.find(
             s => s.refreshToken === refreshToken
         );
+        deviceId=session?.deviceId;
 
         console.log("Found user with existing refresh token during login. Removing old session.");
         await User.updateOne(
@@ -66,14 +68,15 @@ if (refreshToken) {
 }
 else
 {
+    deviceId=crypto.randomUUID()
     try { 
         const newSession = {
-        deviceId: crypto.randomUUID(),
-        refreshToken: newJwtRefreshToken,
-        userAgent: req.get('User-Agent') || 'Unknown Device',
-        ipAddress: req.ip,
-        createdAt: new Date(),
-        lastUsed: new Date(),
+            deviceId: deviceId,
+            refreshToken: newJwtRefreshToken,
+            userAgent: req.get('User-Agent') || 'Unknown Device',
+            ipAddress: req.ip,
+            createdAt: new Date(),
+            lastUsed: new Date(),
         // ... all other session details
     };
     await User.updateOne(
@@ -87,7 +90,7 @@ else
 
 }
 
-const jwtAccessToken = jwt.sign({id:user._id,roles:user.roles},process.env.JWT_ACCESS_SECRET,{expiresIn:"15min"});
+const jwtAccessToken = jwt.sign({id:user._id,roles:user.roles,deviceId},process.env.JWT_ACCESS_SECRET,{expiresIn:"15min"});
 
 
 
