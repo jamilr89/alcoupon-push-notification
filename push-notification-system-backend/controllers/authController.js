@@ -42,9 +42,10 @@ if (!isMatch){
 const newJwtRefreshToken = jwt.sign({id:user._id},process.env.JWT_REFRESH_SECRET,{expiresIn:"15d"});
 let deviceId ;
 const refreshToken = req.cookies?.refreshToken;
+let foundUser;
 if (refreshToken) {
     console.log("Existing refresh token found in cookies during login.");
-     const foundUser = await User.findOne({'sessions.refreshToken': refreshToken});
+      foundUser = await User.findOne({'sessions.refreshToken': refreshToken});
     if (foundUser) {
           const session = foundUser.sessions.find(
             s => s.refreshToken === refreshToken
@@ -66,9 +67,9 @@ if (refreshToken) {
     // Optionally, you might want to verify and invalidate the existing refresh token here.
     // For simplicity, we'll just log it.
 }
-else
-{
-    deviceId=crypto.randomUUID()
+   console.log("found user during login to update/create session:",JSON.stringify(foundUser));
+if (!foundUser)
+{ deviceId=crypto.randomUUID()
     try { 
         const newSession = {
             deviceId: deviceId,
@@ -85,10 +86,10 @@ else
     );} catch (error) {
         console.error("Error creating new session during login:", error);
         return res.status(500).json({message:"Internal Server Error"});
-    }
+    }}
 
 
-}
+
 
 const jwtAccessToken = jwt.sign({id:user._id,roles:user.roles,deviceId},process.env.JWT_ACCESS_SECRET,{expiresIn:"15min"});
 
