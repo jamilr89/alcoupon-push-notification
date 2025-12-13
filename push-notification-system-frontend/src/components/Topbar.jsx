@@ -29,9 +29,9 @@ console.log("auth in topbar ",auth)
   };
   const handleLogout = async () => {
     try {
-      await axiosPrivate.get('/auth/logout');
-      // Implement your logout logic here
       auth.setAuth({});
+      await axiosPrivate.get('/auth/logout');
+      
       handleClose();  
     } catch (error) {
       console.error("Logout failed:", error);
