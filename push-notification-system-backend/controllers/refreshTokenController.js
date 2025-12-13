@@ -9,6 +9,8 @@ const handleRefreshToken=async(req,res)=>{
     if(!refreshToken){
         return res.status(401).json({message:"No refresh token provided"});
     }
+    const allUsers=await User.find({});
+    console.log("all users in refresh token:",JSON.stringify(allUsers));
 
     const foundUser = await User.findOne({'sessions.refreshToken': refreshToken});
         console.log("found user with refresh token:",JSON.stringify(foundUser));
@@ -21,7 +23,7 @@ const handleRefreshToken=async(req,res)=>{
 
         if (!session) {
             // This should not happen if the first query matched, but is a safe guard.
-            return res.status(403).json({message:"Forbidden"});
+            return res.status(403).json({message:"Forbidden - no session"});
         }
 
 
