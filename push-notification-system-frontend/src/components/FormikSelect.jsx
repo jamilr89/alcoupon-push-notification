@@ -60,7 +60,7 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
         // Key fix: isOptionEqualToValue ensures the internal logic matches options to values
         isOptionEqualToValue={(option, val) => {
           console.log('isOptionEqualToValue:', { option, val });
-          return option.value === val.value}} 
+          return option.value == val.value}} 
 
         renderOption={(props, option, { selected }) => 
           {
@@ -73,7 +73,9 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
                 checkedIcon={<CheckBoxIcon />}
                 color='text.primary'
                 // The check logic must compare the option's value with the Formik value (array of IDs)
-                checked={field?.value?.includes(option?.value)||selected}
+                checked={
+                  field?.value?.find(obj => obj.value == option?.value)
+                  ||selected}
               />
             }
             {option?.label ?? option?.value}
