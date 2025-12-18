@@ -123,11 +123,13 @@ const initialValues={
     passwordConfirmation:"",
     userRoles:(userData?.roles?.map((role) => 
                       {
-                        return({
+                        const value={
                       value: role,
                       label: (role?.replace(/([a-z])([A-Z])/g, '$1 $2') 
                               .replace(/^./, str => str.toUpperCase())
-                            )})}))||[],
+                            )}
+                            console.log("role value for initial values "+JSON.stringify(value))
+                        return(value)}))||[],
 };
 
     
