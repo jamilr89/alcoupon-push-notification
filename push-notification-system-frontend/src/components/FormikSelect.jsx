@@ -97,14 +97,17 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
         )}
         
         // RenderValue receives the array of *option objects* for display
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip
+        renderValue={(value, getTagProps) =>{
+         return( value.map((option, index) => {
+          console.log('Render Value:', { option, index });
+            return <Chip
               label={option?.label ?? option?.value}
               {...getTagProps({ index })}
               key={option?.value}
             />
+         }
           ))
+        }
         }
       />
     </FormControl>
