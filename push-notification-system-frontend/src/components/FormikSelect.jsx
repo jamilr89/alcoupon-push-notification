@@ -58,7 +58,9 @@ console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue
         disableCloseOnSelect={multiple ?? true}
         
         // Key fix: isOptionEqualToValue ensures the internal logic matches options to values
-        isOptionEqualToValue={(option, val) => option.value === val.value} 
+        isOptionEqualToValue={(option, val) => {
+          console.log('isOptionEqualToValue:', { option, val });
+          return option.value === val.value}} 
 
         renderOption={(props, option, { selected }) => 
           {
