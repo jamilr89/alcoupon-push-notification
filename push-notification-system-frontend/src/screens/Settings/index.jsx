@@ -128,7 +128,7 @@ return ()=>{
                   <TableCell >{device.username}</TableCell>
                   <TableCell >{device.device_type}</TableCell>
                   <TableCell >{device.token}</TableCell>
-                   <TableCell >{device?.addedTime?new Date(device?.addedTime):"N/A"}</TableCell>
+                   <TableCell >{device?.addedTime?new Date(device?.addedTime)?.toLocaleString():"N/A"}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
@@ -167,8 +167,8 @@ return ()=>{
                   <TableCell >{device.username}</TableCell>
                   <TableCell >{device.device_type}</TableCell>
                   <TableCell >{device.token}</TableCell>
-                    <TableCell >{device?.addedTime?new Date(device?.addedTime):"N/A"}</TableCell>
-                  <TableCell >{device?.activatedAt?new Date(device?.activatedAt):"N/A"}</TableCell>
+                    <TableCell >{device?.addedTime?new Date(device?.addedTime)?.toLocaleString():"N/A"}</TableCell>
+                  <TableCell >{device?.activatedAt?new Date(device?.activatedAt)?.toLocaleString():"N/A"}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
