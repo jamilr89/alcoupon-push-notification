@@ -18,6 +18,14 @@ const TestingDeviceScheme=new mongoose.Schema(
             type:String,
             enum:["active","inactive"],
             default:"inactive"
+        },
+        addedTime:{
+            type:Date,
+            default:Date.now
+        },
+        activatedAt:{
+            type:Date,
+            required:false
         }
     }
 )

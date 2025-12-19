@@ -74,7 +74,8 @@ devicesRouter.post("/test_devices",async(req,res)=>{
             username:username,
             token:token,
             device_type:device_type||undefined,
-            status:"inactive"
+            status:"inactive",
+            createTime:Date.now()
         })
   
         return res.status(200).json(result)
@@ -91,7 +92,7 @@ devicesRouter.post("/confirm_device/:id",authMiddleWare,AuthorizeRole("admin","s
     const {id}= req.params;
      try {
     if (id){
-        const result = await TestingDevice.findByIdAndUpdate(id,{status:"active"},{new:true})
+        const result = await TestingDevice.findByIdAndUpdate(id,{status:"active",activatedAt:Date.now()},{new:true})
   console.log("confirm device result "+JSON.stringify(result))
         return res.status(200).json(result)
     }

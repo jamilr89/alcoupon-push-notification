@@ -2,7 +2,6 @@ import admin from 'firebase-admin';
 import { getMessaging } from "firebase-admin/messaging";
 import cron from 'node-cron'
 import { convertToCronTime } from '../utilities.js';
-import testingDevice from '../models/testingDevices.model.js';
 import { updateStatusField,updateSentCount } from '../notificationDbController.js';
 
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
