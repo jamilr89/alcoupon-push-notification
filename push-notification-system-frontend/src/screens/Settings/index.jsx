@@ -127,7 +127,7 @@ return ()=>{
                 <TableRow key={device._id}>
                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.username}</TableCell>
                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.device_type}</TableCell>
-                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{(new Date(device.createTime))}</TableCell>
+                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{new Date(device.createTime)}</TableCell>
                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.token}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
@@ -166,9 +166,9 @@ return ()=>{
                 <TableRow key={device._id}>
                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.username}</TableCell>
                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.device_type}</TableCell>
-                    <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{(new Date(device.createTime))}</TableCell>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{(new Date(device.activatedAt))}</TableCell>
-                  <TableCell>{device.token}</TableCell>
+                    <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{new Date(device.createTime)}</TableCell>
+                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{new Date(device.activatedAt)}</TableCell>
+                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.token}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
