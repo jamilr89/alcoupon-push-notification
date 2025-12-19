@@ -127,8 +127,8 @@ return ()=>{
                 <TableRow key={device._id}>
                   <TableCell >{device.username}</TableCell>
                   <TableCell >{device.device_type}</TableCell>
-                   <TableCell >{device?.createTime?new Date(device?.createTime):"N/A"}</TableCell>
                   <TableCell >{device.token}</TableCell>
+                   <TableCell >{device?.createTime?new Date(device?.createTime):"N/A"}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
@@ -166,9 +166,9 @@ return ()=>{
                 <TableRow key={device._id}>
                   <TableCell >{device.username}</TableCell>
                   <TableCell >{device.device_type}</TableCell>
+                  <TableCell >{device.token}</TableCell>
                     <TableCell >{device?.createTime?new Date(device?.createTime):"N/A"}</TableCell>
                   <TableCell >{device?.activatedAt?new Date(device?.activatedAt):"N/A"}</TableCell>
-                  <TableCell >{device.token}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
