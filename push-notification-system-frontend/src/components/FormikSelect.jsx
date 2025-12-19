@@ -24,10 +24,12 @@ const FormikSelect = ({ label, options, multiple = true, loading = false, ...pro
 
     if (multiple) {
       // 1. If multiple, map the array of selected option objects back to an array of their primitive values (IDs)
-      finalValue = selectedOptions?.map(option => option.value);
+      finalValue = selectedOptions
+      // ?.map(option => option.value);
     } else {
       // 2. If single, take the primitive value (ID) of the single selected option object
-      finalValue = selectedOptions ? selectedOptions.value : null;
+      finalValue = selectedOptions 
+      // ? selectedOptions.value : null;
     }
 console.log('Handle Change:', { selectedOptions, finalValue });
     // Set the cleaned value (array of IDs or single ID) in Formik
@@ -40,7 +42,7 @@ console.log('Handle Change:', { selectedOptions, finalValue });
   // Autocomplete requires the 'value' prop to be an array of option objects, 
   // but Formik holds an array of primitive values (IDs). We must map the IDs back to objects for the Autocomplete to display them correctly.
   const autocompleteValue = multiple
-    ? options.filter(option => field?.value?.includes(option?.value))
+    ? options.filter(option => field?.find(obj => obj?.value === option?.value))
     : options.find(option => option?.value === field?.value) || null;
 console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue });
 
