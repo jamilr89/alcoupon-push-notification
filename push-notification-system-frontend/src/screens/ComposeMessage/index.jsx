@@ -417,7 +417,7 @@ const params =await getNotificationParams(values)
 
 const responses=[];
 
-  if (values?.selectedLanguage?.includes("en"))
+  if (values?.selectedLanguage?.find(obj => obj.value === "en"))
     {
     
       params.set("languages",["en"])
@@ -575,7 +575,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
       ></TextField>}
 
 
-    {!!values?.selectedLanguage?.includes("en")&&
+    {!!values?.selectedLanguage?.find(obj => obj.value === "en")&&
       <TextField 
       fullWidth
       variant='filled'
@@ -598,7 +598,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
                 </span>
       }
       ></TextField>}
-       {!!values?.selectedLanguage?.includes("en")&&
+       {!!values?.selectedLanguage?.find(obj => obj.value === "en")&&
          <TextField
       fullWidth
       variant='filled'
@@ -645,7 +645,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
     !values?.selectedLanguage?.includes("en")
     ||
     (
-      values?.selectedLanguage?.includes("en")
+      values?.selectedLanguage?.find(obj => obj.value === "en")
       &&values?.notificationTitle
       &&values.notificationText
     )
@@ -655,7 +655,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
   !values?.selectedLanguage?.includes("ar")
   ||
   (
-    values?.selectedLanguage?.includes("ar")
+    values?.selectedLanguage?.find(obj => obj.value === "en")
     &&!errors?.notificationTitleArabic
     &&!errors?.notificationTextArabic
   )

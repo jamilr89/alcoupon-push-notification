@@ -28,7 +28,7 @@ const FormikSelect = ({ label, options, multiple = true, loading = false, ...pro
       // ?.map(option => option.value);
     } else {
       // 2. If single, take the primitive value (ID) of the single selected option object
-      finalValue = selectedOptions 
+      finalValue = [selectedOptions]
       // ? selectedOptions.value : null;
     }
 console.log('Handle Change:', { selectedOptions, finalValue });
