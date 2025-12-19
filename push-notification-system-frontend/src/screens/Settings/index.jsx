@@ -125,10 +125,10 @@ return ()=>{
             <TableBody>
               {inActiveDevicesList.map((device) => (
                 <TableRow key={device._id}>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.username}</TableCell>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.device_type}</TableCell>
-                   <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{new Date(device.createTime)}</TableCell>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.token}</TableCell>
+                  <TableCell >{device.username}</TableCell>
+                  <TableCell >{device.device_type}</TableCell>
+                   <TableCell >{new Date(device.createTime)}</TableCell>
+                  <TableCell >{device.token}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
@@ -164,11 +164,11 @@ return ()=>{
             <TableBody>
               {activeDevicesList.map((device) => (
                 <TableRow key={device._id}>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.username}</TableCell>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.device_type}</TableCell>
-                    <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{new Date(device.createTime)}</TableCell>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{new Date(device.activatedAt)}</TableCell>
-                  <TableCell style={{ width: '100px', whiteSpace: 'normal', wordWrap: 'break-word' }}>{device.token}</TableCell>
+                  <TableCell >{device.username}</TableCell>
+                  <TableCell >{device.device_type}</TableCell>
+                    <TableCell >{new Date(device.createTime)}</TableCell>
+                  <TableCell >{new Date(device.activatedAt)}</TableCell>
+                  <TableCell >{device.token}</TableCell>
                   <TableCell>
                     {/* Action buttons like Edit/Delete can go here */}
                     <button
