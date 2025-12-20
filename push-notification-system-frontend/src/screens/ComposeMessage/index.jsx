@@ -120,31 +120,31 @@ dayjs.extend(timezone);
  
     openTypes:yup.string().notRequired(),
     // .required("Please Select type"),
-    selectedTimezone:yup.string().required("Please Select time zone"),
+    selectedTimezone:yup.array().length(1,"Please Select time zone").required(),
     
-    nidField:yup.string()
+    nidField:yup.array().length(1)
     .when('openTypes', {
-      is:(value)=>   {return openLinkTypeRelatedFields[value]?.some(field =>  (field?.value === "nid"&&field?.required===true))}, // If hasCategory is true
+      is:(value)=>   {return openLinkTypeRelatedFields[value[0]?.value]?.some(field =>  (field?.value === "nid"&&field?.required===true))}, // If hasCategory is true
       then:()=> yup.string().required('nid is required'), // Make category required
       otherwise:()=> yup.string().notRequired(), // Otherwise, it's optional
     })
     ,
     pageType:yup.string()
     .when('openTypes', {
-      is:(value)=>  { return openLinkTypeRelatedFields[value]?.some(field => (field?.value === "type"&&field?.required===true))}, // If hasCategory is true
+      is:(value)=>  { return openLinkTypeRelatedFields[value[0]?.value]?.some(field => (field?.value === "type"&&field?.required===true))}, // If hasCategory is true
       then:()=> yup.string().required('type is required'), // Make category required
       otherwise:()=> yup.string().notRequired(), // Otherwise, it's optional
     })
     ,
     linkField:yup.string()
     .when('openTypes', {
-      is:(value)=>  { return openLinkTypeRelatedFields[value]?.some(field => (field?.value === "link"&&field?.required===true))}, // If hasCategory is true
+      is:(value)=>  { return openLinkTypeRelatedFields[value[0]?.value]?.some(field => (field?.value === "link"&&field?.required===true))}, // If hasCategory is true
       then:()=> yup.string().required('link is required'), // Make category required
       otherwise:()=> yup.string().notRequired(), // Otherwise, it's optional
     }),
     linkTypeField:yup.string()
     .when('openTypes', {
-      is:(value)=>  { return openLinkTypeRelatedFields[value]?.some(field => (field?.value === "open_link_type"&&field?.required===true))}, // If hasCategory is true
+      is:(value)=>  { return openLinkTypeRelatedFields[value[0]?.value]?.some(field => (field?.value === "open_link_type"&&field?.required===true))}, // If hasCategory is true
       then:()=> yup.string().required('Open Link Type is required'), // Make category required
       otherwise:()=> yup.string().notRequired(), // Otherwise, it's optional
     }),
@@ -354,7 +354,7 @@ await axiosPrivate.get("api/notifications/test",{params})
 setLoadingTest(false)
 }
 
- if (values.selectedLanguage.includes("ar")&&values?.notificationTitleArabic&&values?.notificationTextArabic){
+ if (values.selectedLanguage.find(obj => obj.value === "ar")&&values?.notificationTitleArabic&&values?.notificationTextArabic){
 params.set("title",values.notificationTitleArabic)
 params.set ("body",values.notificationTextArabic)
 // url.search= params?.toString()
@@ -440,8 +440,8 @@ return;
       //  await axiosPrivate.get("api/notifications/send_pn",{params})
     }
 
-    
-    if (values?.selectedLanguage?.includes("ar"))
+
+    if (values?.selectedLanguage?.find(obj => obj.value === "ar"))
       {
        
         params.set('title',values?.notificationTitleArabic);
@@ -525,9 +525,9 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
     style={{gridColumn:"span 4"}}
     >Text</h1>
  {
- 
- 
- !!values?.selectedLanguage?.includes("ar")&&
+
+
+ !!values?.selectedLanguage?.find(obj => obj.value === "ar")&&
  <TextField
       fullWidth
       
@@ -552,7 +552,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
                 </span>
       }
       ></TextField>}
-      {!!values?.selectedLanguage?.includes("ar")&&
+      {!!values?.selectedLanguage?.find(obj => obj.value === "ar")&&
       <TextField
       fullWidth
       variant='filled'
@@ -655,7 +655,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
 )
 &&
   ( 
-  !values?.selectedLanguage?.includes("ar")
+  !values?.selectedLanguage?.find(obj => obj.value === "ar")
   ||
   (
     values?.selectedLanguage?.find(obj => obj.value === "en")
