@@ -41,9 +41,10 @@ console.log('Handle Change:', { selectedOptions, finalValue });
 
   // Autocomplete requires the 'value' prop to be an array of option objects, 
   // but Formik holds an array of primitive values (IDs). We must map the IDs back to objects for the Autocomplete to display them correctly.
-  const autocompleteValue = multiple
-    ? options.filter(option => field?.value?.find(obj => obj?.value === option?.value))
-    : options.find(option => option?.value === field?.value?.value) || null;
+  const autocompleteValue = 
+  // multiple? 
+    options.filter(option => field?.value?.find(obj => obj?.value === option?.value))
+    // : options.find(option => option?.value === field?.value?.value) || null;
 console.log('FormikSelect Render:', { fieldValue: field.value, autocompleteValue });
 
   return (
