@@ -301,7 +301,7 @@ const getNotificationParams=async(values)=>{
   const params = new URLSearchParams();
   params.set("campaign_name",values?.notificationName);
   params.set("campaign_id",values?.notificationName?.trim().toLowerCase().replace(/\s+/g, '_'))
-  values?.openTypes&&params.set("open_type",values?.openTypes)
+  values?.openTypes&&params.set("open_type",values?.openTypes?.value)
   values?.openTypes&&values?.nidField&&params.set("nid",values?.nidField)
   values?.openTypes&&values?.pageType&&params.set("page_type",values?.pageType)
   values?.openTypes&&values?.link&&params.set("link",values?.linkField)
