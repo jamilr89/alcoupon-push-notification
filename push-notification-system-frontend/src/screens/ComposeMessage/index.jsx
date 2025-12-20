@@ -335,7 +335,7 @@ setLoadingTest(true)
     // const token="e7PwK8iUQ066C3jQRWF43M:APA91bHy_YHxDpxDo-8rYmP_7C1T_hYwJUpxik5GYy-4UssJtmWVHovbjjwBN9ugPluLL_u6Xu_aTaITPGy_t8ugLZJNCEjeyD03EomU13JlQ5tCCZ_-AM4"
  params.set("tokens", JSON.stringify(tokens))
 
-    if (values?.selectedLanguage?.includes("en")&&values?.notificationTitle&&values?.notificationText){
+    if (values?.selectedLanguage?.find(obj => obj.value === "en")&&values?.notificationTitle&&values?.notificationText){
       params.set("title",values?.notificationTitle)
       params.set("body",values?.notificationText)
     // url.search = params.toString();
@@ -524,8 +524,11 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
        <h1
     style={{gridColumn:"span 4"}}
     >Text</h1>
- {!!values?.selectedLanguage?.includes("ar")&&
-<TextField
+ {
+ 
+ 
+ !!values?.selectedLanguage?.includes("ar")&&
+ <TextField
       fullWidth
       
       variant='filled'
@@ -642,7 +645,7 @@ handleChange={(e)=>console.log("handle change "+JSON.stringify(e))}
   &&
   (
   (
-    !values?.selectedLanguage?.includes("en")
+    !values?.selectedLanguage?.find(obj => obj.value === "en")
     ||
     (
       values?.selectedLanguage?.find(obj => obj.value === "en")
