@@ -118,7 +118,7 @@ dayjs.extend(timezone);
     .typeError("Invalid date/time") // Prevents "undefined" errors
     .required("Date & Time is required") ,
  
-    openTypes:yup.string().notRequired(),
+    openTypes:yup.array().length(1).notRequired(),
     // .required("Please Select type"),
     selectedTimezone:yup.array().length(1,"Please Select time zone").required(),
     
