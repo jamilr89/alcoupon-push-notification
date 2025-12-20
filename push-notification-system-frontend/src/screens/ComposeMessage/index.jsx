@@ -408,7 +408,7 @@ console.log("time date in submit "+values?.dateTime)
 const params =await getNotificationParams(values)
   params.set('tokens',JSON.stringify(tokens) );
   params.set('time',dateTimeFormatted);
-  params.set('timezone',values?.selectedTimezone);
+  params.set('timezone',values?.selectedTimezone[0]?.value);
   
   params.set("os",JSON.stringify(values?.selectedOS.map((obj)=>obj.value)));
   params.set("countries",JSON.stringify(values.selectedCountries.map((obj)=>obj.value)));
