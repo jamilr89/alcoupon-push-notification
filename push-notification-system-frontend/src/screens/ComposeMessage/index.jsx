@@ -30,12 +30,12 @@ dayjs.extend(timezone);
     selectedCountries:[],
     selectedLanguage:[],
     dateTime:null,
-    openTypes:"",
+    openTypes:[],
     nidField:"",
     pageType:"",
     linkField:"",
     linkTypeField:"",
-    selectedTimezone:""
+    selectedTimezone:[]
   
   }
   
