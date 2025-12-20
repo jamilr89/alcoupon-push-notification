@@ -301,7 +301,7 @@ const getNotificationParams=async(values)=>{
   const params = new URLSearchParams();
   params.set("campaign_name",values?.notificationName);
   params.set("campaign_id",values?.notificationName?.trim().toLowerCase().replace(/\s+/g, '_'))
-  values?.openTypes&&params.set("open_type",values?.openTypes?.value)
+  values?.openTypes&&params.set("open_type",values?.openTypes[0]?.value)
   values?.openTypes&&values?.nidField&&params.set("nid",values?.nidField)
   values?.openTypes&&values?.pageType&&params.set("page_type",values?.pageType)
   values?.openTypes&&values?.link&&params.set("link",values?.linkField)
@@ -377,7 +377,7 @@ const tokens = testingDevicesSelectedList;
   //   values.selectedLanguage&&
   //   values.selectedCountries&&
   //   values.dateTime){
-    const dateInTimezone = values.dateTime.tz(values.selectedTimezone.value, true);
+    const dateInTimezone = values.dateTime.tz(values.selectedTimezone[0]?.value, true);
   //   console.log("naive time "+naive)
   // const dateInTimezone = dayjs(naive).tz(values.selectedTimezone);
   const dateTimeFormatted= dateInTimezone.format();
@@ -410,8 +410,8 @@ const params =await getNotificationParams(values)
   params.set('time',dateTimeFormatted);
   params.set('timezone',values?.selectedTimezone);
   
-  params.set("os",JSON.stringify(values?.selectedOS));
-  params.set("countries",JSON.stringify(values.selectedCountries))
+  params.set("os",JSON.stringify(values?.selectedOS.map((obj)=>obj.value)));
+  params.set("countries",JSON.stringify(values.selectedCountries.map((obj)=>obj.value)));
 
 
 
@@ -795,7 +795,7 @@ loading={loadingData}
     value={values.openTypes}
       // onChange={(e)=>{handleChange(e);setOpenType(values?.openTypes)}}
    ></FormikSelect>
-   {!!values?.openTypes&& openLinkTypeRelatedFields[values?.openTypes]?.some(field => field.value === "type")&&
+   {!!values?.openTypes?.length>0&& openLinkTypeRelatedFields[values?.openTypes[0]?.value]?.some(field => field.value === "type")&&
    <TextField
       fullWidth
       variant='filled'
@@ -810,7 +810,7 @@ loading={loadingData}
       sx={{gridColumn:"span 4"}}
       ></TextField>}
 
-{!!values?.openTypes&& openLinkTypeRelatedFields[values?.openTypes]?.some(field => field.value === "nid")&&
+{!!values?.openTypes?.length>0&& openLinkTypeRelatedFields[values?.openTypes[0]?.value]?.some(field => field.value === "nid")&&
 <TextField
       fullWidth
       variant='filled'
@@ -825,7 +825,7 @@ loading={loadingData}
       sx={{gridColumn:"span 4"}}
       ></TextField>}
 
-{!!values?.openTypes&& openLinkTypeRelatedFields[values?.openTypes]?.some(field => field.value === "link")&&<TextField
+{!!values?.openTypes?.length>0&& openLinkTypeRelatedFields[values?.openTypes[0]?.value]?.some(field => field.value === "link")&&<TextField
       fullWidth
       variant='filled'
       type='text'
@@ -839,7 +839,7 @@ loading={loadingData}
       sx={{gridColumn:"span 4"}}
       ></TextField>}
 
-{!!values?.openTypes&& openLinkTypeRelatedFields[values?.openTypes]?.some(field => field.value === "open_link_type")&&
+{!!values?.openTypes?.length>0&& openLinkTypeRelatedFields[values?.openTypes[0]?.value]?.some(field => field.value === "open_link_type")&&
 <TextField
       fullWidth
       variant='filled'
