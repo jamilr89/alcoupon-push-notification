@@ -2,7 +2,7 @@ FROM node:18.20.2-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .
 
 
 

@@ -96,7 +96,7 @@ const jwtAccessToken = jwt.sign({id:user._id,roles:user.roles,deviceId},process.
 
 
 
-            res.cookie("refreshToken",newJwtRefreshToken,{httpOnly:true,sameSite: 'Strict',maxAge:1*24*60*60*1000,secure:false});
+            res.cookie("refreshToken",newJwtRefreshToken,{httpOnly:true,sameSite: 'Strict',maxAge:15*24*60*60*1000,secure:false});
             console.log("login successful for user:",username);
 return res.status(200).json({token:jwtAccessToken,roles:user.roles,username:user.username});
 }catch(error){

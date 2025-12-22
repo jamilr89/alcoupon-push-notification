@@ -90,7 +90,7 @@ setLoading(true);
  
  isMounted&& setOsOptions(OSResponse?.data?.map((val)=>(
     {
-      value:"id_"+val?.device_type,
+      value:val?.device_type,
       label:val?.device_type
     })))
 }catch(error){

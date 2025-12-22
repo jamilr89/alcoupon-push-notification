@@ -75,7 +75,7 @@ devicesRouter.post("/test_devices",async(req,res)=>{
             token:token,
             device_type:device_type||undefined,
             status:"inactive",
-            createTime:Date.now()
+            addedTime:Date.now()
         })
   
         return res.status(200).json(result)
@@ -108,7 +108,7 @@ devicesRouter.get("/test_devices",authMiddleWare,AuthorizeRole("admin","sender",
     
      try {
 
-        const result =await TestingDevice.find({status:"active"})
+        const result =await TestingDevice.find({status:"active"}).sort({ addedTime: -1 })
   console.log("get testing devices "+JSON.stringify(result))
         return res.status(200).json(result)
     }
@@ -123,7 +123,7 @@ devicesRouter.get("/inactive_test_devices",authMiddleWare,AuthorizeRole("admin",
     
      try {
 
-        const result =await TestingDevice.find({status:"inactive"})
+        const result =await TestingDevice.find({status:"inactive"}).sort({ activatedAt: -1 })
   console.log("get inactive testing devices "+JSON.stringify(result))
         return res.status(200).json(result)
     }

@@ -21,11 +21,13 @@ const TestingDeviceScheme=new mongoose.Schema(
         },
         addedTime:{
             type:Date,
-            default:Date.now
+            required:false,
+            index:true
         },
         activatedAt:{
             type:Date,
-            required:false
+            required:false,
+            index:true
         }
     }
 )

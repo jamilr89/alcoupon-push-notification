@@ -2,32 +2,53 @@ version: '3.8'
 
 services:
   # The Backend API Service (Uses the new Dockerfile.backend name)
+
+  # The Backend API Service (Uses the new Dockerfile.backend name)
   api:
-    
-    container_name: api_dev
+    build:
+      context: ./push-notification-system-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./push-notification-system-backend/.env
     
     # --- Source Code and Dependency Isolation Fix ---
     volumes:
-      - ./backend:/app
-      - /app/node_modules # Exclusion: Prevents host node_modules from conflicting
+      # 1. Mount host source code temporarily for the copy operation
+      # - ./push-notification-system-backend:/tmp/source:ro 
+      # 2. Permanent named volume for source code (target of copy)
+      # - api_source:/app       
+      # 3. Permanent named volume for dependencies
+      # - nodemodules:/app/node_modules 
+      # - ~/.secrets/firebase/alcoupon-webapp-firebase-adminsdk.json:/etc/secrets/firebase/key.json:ro
+      - /Users/jamil/Downloads/alcoupon-webapp-firebase-adminsdk.json:/app/credentials/firebase-credentials.json:ro
+      - ./push-notification-system-backend:/app
+      - /app/node_modules
 
     environment:
       # This is the path INSIDE the container that the Node.js app reads
-      # FIREBASE_SERVICE_ACCOUNT_PATH: /etc/secrets/firebase/key.json
-      FIREBASE_SERVICE_ACCOUNT_PATH: /app/credentials/firebase-credentials.json
-
+      
+       FIREBASE_SERVICE_ACCOUNT_PATH: /app/credentials/firebase-credentials.json
+      # - FIREBASE_SERVICE_ACCOUNT_PATH=/app/credentials/firebase-credentials.json
+      
     # CRITICAL FIX: The initial copy operation is now part of the command.
     # It copies the source code from the temporary host mount to the permanent named volume (/app)
     # on the first run, then starts the API.
-    # command: sh -c "cp -r /tmp/source/. /app && npm start"
-    # --- End Isolation Fix ---
     command: npm run dev # Your development start script (e.g., nodemon)
-    
+    # --- End Isolation Fix ---
     ports:
       - 4000:4000
     expose:
       - 4000
-    
+    networks:
+      - push_notification
+
+
+    depends_on:
+      - mongo
+
+
+
+  
     
   # Helper service to copy source code (Path remains correct)
   # api_copy_source:
@@ -37,16 +58,55 @@ services:
   #     - api_source:/app
     
   # The Frontend Application Service (Uses the new standard Dockerfile name)
+
+
+
   frontend:
-    
-    
-    container_name: frontend_dev
+    build:
+      context: ./push-notification-system-frontend
+      dockerfile: Dockerfile.dev
     volumes:
-      - ./frontend:/app
+      - ./push-notification-system-frontend:/app
       - /app/node_modules
     ports:
       - "3000:3000" # React dev server port
-    command: npm start # Run the development server
+    command: npm start
+    image: push-frontend:latest
+    container_name: frontend
+    restart: "no"
+    networks:
+      - push_notification
+    env_file:
+      - ./push-notification-system-frontend/.env
+    depends_on:
+      - api
+    # mem_limit: 256m
+    
+
+  # ... (mongo and nginx-proxy services remain unchanged) ...
+  mongo:
+    image: mongo:4.4
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - push_notification
+
+
+
+networks:
+  push_notification:
+    driver: bridge
+
+volumes:
+  nodemodules:
+    driver: local
+  api_source:
+    driver: local
+  mongo_data:
+    driver: local
     
 
   # ... (mongo and nginx-proxy services remain unchanged) ...
