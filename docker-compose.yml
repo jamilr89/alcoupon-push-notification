@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # The Backend API Service (Uses the new Dockerfile.backend name)
@@ -85,6 +84,51 @@ services:
     depends_on:
       - api
       - frontend
+
+
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    restart: always
+
+  # This container only runs once to fill the queue
+  producer:
+    build: .
+    command: node src/producer.js
+    depends_on:
+      - redis
+    ports:
+      - 6379:6379
+    networks:
+      - push_notification
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+  # You can scale this one: docker-compose up --scale worker=5
+  worker:
+    build: .
+    command: node workers/fcmWorker.js
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+
+  master-worker:
+    build: .
+    command: node src/masterWorker.js # Change this to your actual master file path
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+
+      
 
 networks:
   push_notification:

@@ -2,7 +2,7 @@ import admin from 'firebase-admin';
 import { getMessaging } from "firebase-admin/messaging";
 import cron from 'node-cron'
 import { convertToCronTime } from '../utilities.js';
-import { updateStatusField,updateSentCount } from '../notificationDbController.js';
+import { updateStatusField,updateSentCount } from './notificationDbController.js';
 
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
@@ -152,20 +152,20 @@ const sendMessageWithObject=async({id,tokens,title,body,campaign_name,campaign_i
 
       const registrationToken =JSON.parse (tokens);
         console.log("send message object called "+typeof(registrationToken) + " " +registrationToken)
-const filteredRegistrationTokens = (
-  // remove blacklisted tokens that were added last campaign as not available tokens
-  await Promise.all(
-    registrationToken.map(async (token) => {
-      const exists = await blackListedTokens.findOne({ token });
-      return exists ? null : token; // return null if blacklisted
-    })
-  )
-).filter(token => token !== null); // remove nulls
-  if (filteredRegistrationTokens?.length>0){
-      const batches = chunkArray(filteredRegistrationTokens);
+// const filteredRegistrationTokens = (
+//   // remove blacklisted tokens that were added last campaign as not available tokens
+//   await Promise.all(
+//     registrationToken.map(async (token) => {
+//       const exists = await blackListedTokens.findOne({ token });
+//       return exists ? null : token; // return null if blacklisted
+//     })
+//   )
+// ).filter(token => token !== null); // remove nulls
+  // if (filteredRegistrationTokens?.length>0){
+  //     const batches = chunkArray(filteredRegistrationTokens);
       const allResponses = [];
       const allTokens = [];
-for (const batch of batches) {
+// for (const batch of batches) {
   console.log("batch "+JSON.stringify(batch))
   const deepLink= deepLinkGenerator(open_type,nid,page_type,link,link_type)
   console.log("deep link from generator "+deepLink)
@@ -196,7 +196,7 @@ for (const batch of batches) {
   tokens: batch
   };
   console.log("message in fcm "+JSON.stringify(message))
-  !!id && updateStatusField(id,"sending")
+  // !!id && updateStatusField(id,"sending")
 
 
 
@@ -217,15 +217,16 @@ allResponses.push(...response.responses)
   // .catch(error => console.error("Error sending messages:", error));
     // return response
     allTokens.push(...batch);
-  }
+  
   console.log("all responses "+JSON.stringify(allResponses))
   return {allResponses,allTokens};
-}
+  }
+// }
   // .catch((error) => {
   //   console.log('Error sending message:', JSON.stringify(error));
   //   // !! error?.message&& updateStatusField(id,"failed")
     // return null
-  }
+  // }
 
 
 
@@ -487,4 +488,4 @@ return {
 }
 }
 
-export {sendTestMessage,schedulePN,getMessageMetrics,getNotificationAnalyticsFromDb};
+export {sendTestMessage,schedulePN,getMessageMetrics,getNotificationAnalyticsFromDb,sendMessageWithObject };

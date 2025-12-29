@@ -3,6 +3,7 @@ import NotificationModel from '../models/notification.model.js';
 import {schedulePN, sendTestMessage,getNotificationAnalyticsFromDb } from '../controllers/handleFCM.js'
 import authMiddleWare from '../middlewares/authMiddleWare.js';
 import AuthorizeRole from '../middlewares/roleMiddleWare.js';
+import { scheduleGlobalBlast,cancelScheduledBlast } from '../producer.js';
 
 
 const notificationRouter =express.Router();
@@ -60,16 +61,37 @@ notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender","su
                 link_type:link_type
             })
            
-            const response= schedulePN ({id:doc?._id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})
-            
+            // const response= schedulePN ({id:doc?._id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})
+            const response = await scheduleGlobalBlast({id:doc?._id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})
          
-            return res.status(200).json({status:"success",message:response})
+            return res.status(200).json({status:"success",message:response}) 
         } catch (error) {
             console.log("send_pn error "+error)
             return res.status(500).json({error:error})
             
         }
      })
+
+     notificationRouter.post('/cancel_pn_schedule',authMiddleWare,AuthorizeRole("admin","sender","superAdmin"), async (req, res) => {
+  const { jobId } = req.body;
+  const success = await cancelScheduledBlast(jobId);
+  
+  if (success) res.json({ message: "Successfully cancelled" });
+  else res.status(404).json({ error: "Job not found or already started" });
+});
+
+
+
+
+notificationRouter.post('/stop_pn_schedule', authMiddleWare,AuthorizeRole("admin","sender","superAdmin"), async (req, res) => {
+     const { jobId } = req.body;
+  // Set a flag in Redis that workers check before sending
+  await stopScheduledBlast(jobId);
+  res.json({ message: "Kill switch activated. Workers will stop processing." });
+});
+
+
+
 
 notificationRouter.get('/',authMiddleWare,AuthorizeRole("admin","user","superAdmin"),async(req,res)=>{
     try{
