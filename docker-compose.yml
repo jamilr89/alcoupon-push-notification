@@ -93,18 +93,16 @@ services:
 
   # This container only runs once to fill the queue
   producer:
-    build: .
-    command: node src/producer.js
+    build: ./push-notification-system-backend
+    command: node producer.js
     depends_on:
       - redis
-    ports:
-      - 6379:6379
     networks:
       - push_notification
+    env_file: ./push-notification-system-backend/.env
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-
   # You can scale this one: docker-compose up --scale worker=5
   worker:
     build: ./push-notification-system-backend
