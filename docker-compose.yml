@@ -106,7 +106,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
   # You can scale this one: docker-compose up --scale worker=5
-   worker:
+  worker:
     build: ./push-notification-system-backend
     command: workers/fcmWorker.js
     restart: always
