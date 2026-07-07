@@ -106,26 +106,34 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
   # You can scale this one: docker-compose up --scale worker=5
-  worker:
-    build: .
-    command: node workers/fcmWorker.js
+   worker:
+    build: ./push-notification-system-backend
+    command: workers/fcmWorker.js
     restart: always
     depends_on:
       - redis
+    env_file: ./push-notification-system-backend/.env
+    networks:
+      - push_notification
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
 
   master-worker:
-    build: .
-    command: node src/masterWorker.js # Change this to your actual master file path
+    build: ./push-notification-system-backend
+    command: workers/masterWorker.js
     restart: always
     depends_on:
       - redis
+    env_file: ./push-notification-system-backend/.env
+    networks:
+      - push_notification
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+    
+
 
 
       

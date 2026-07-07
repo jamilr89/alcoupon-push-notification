@@ -9,4 +9,5 @@ const masterWorker = new Worker('fcm-notifications', async (job) => {
     
     await runUserStreaming(job.data);
   }
-}, { connection: redisConfig });
+}, { connection: redisConfig ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
+  lockRenewTime: 60000});
