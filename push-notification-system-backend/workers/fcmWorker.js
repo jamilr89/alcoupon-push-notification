@@ -1,4 +1,4 @@
-import { Worker } from 'bullmq';
+import { Worker } from ' ';
 import { sendMessageWithObject } from '../controllers/handleFCM.js';
 import { redis,redisConfig } from '../config/redis.js';
 import { updateStatusField } from '../controllers/notificationDbController.js';
@@ -71,4 +71,5 @@ deviceData&&id?
   } catch (error) {
     throw error; // Retry only if total failure
   }
-}, { connection: redisConfig, concurrency: 10 });
+}, { connection: redisConfig, concurrency: 10 ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
+  lockRenewTime: 60000});

@@ -42,6 +42,7 @@ notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender","su
 
     notificationRouter.get('/send_pn',authMiddleWare,AuthorizeRole("admin","sender","superAdmin"),async (req,res)=>{
         try {
+            console.log("in send pn ")
             const {tokens,body,title,campaign_name,campaign_id,time,timezone,os,languages,countries,open_type,nid,page_type,link,link_type}=req.query;
             console.log("operating system "+JSON.stringify(os))
             const doc=await NotificationModel.create({
@@ -63,7 +64,7 @@ notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender","su
            
             // const response= schedulePN ({id:doc?._id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})
             const response = await scheduleGlobalBlast({id:doc?._id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})
-         
+         console.log("response in send pn "+JSON.stringify(response))
             return res.status(200).json({status:"success",message:response}) 
         } catch (error) {
             console.log("send_pn error "+error)

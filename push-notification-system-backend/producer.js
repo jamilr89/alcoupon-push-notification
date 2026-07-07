@@ -9,18 +9,20 @@ import { updateStatusField } from './controllers/notificationDbController.js';
  */
 async function scheduleGlobalBlast(payload) {
     const  { time } = payload;
-  const jobId = `master-blast-${time}`;
+    const timestamp = new Date(time).getTime();
+  const jobId = `master-blast-${timestamp}`;
    console.log("Scheduling global blast at "+time)
    console.log("With payload "+JSON.stringify(payload))
    console.log("delay "+(new Date(time) - Date.now()))
+   console.log("jobId "+jobId)
 
-  await notificationQueue.add('trigger-send-notification', payload, {
+  const result = await notificationQueue.add('trigger-send-notification', payload, {
    
     delay: new Date(time) - Date.now(),
     jobId: jobId,
     removeOnComplete: true,
   });
-  
+  console.log(`Scheduled global blast with job ${JSON.stringify(result)}`);
   return jobId;
 }
 
@@ -66,7 +68,7 @@ async function runUserStreaming(payload) {
 
   for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
     currentBatch.push(doc.fcmToken);
-
+console.log("current batch size "+currentBatch.length)
     if (currentBatch.length === BATCH_SIZE) {
       await notificationQueue.add('send-batch', {
         tokens: currentBatch,
