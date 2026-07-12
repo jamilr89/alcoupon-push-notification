@@ -1,4 +1,4 @@
-import { Worker } from ' ';
+import { Worker } from 'bullmq';
 import { sendMessageWithObject } from '../controllers/handleFCM.js';
 import { redis,redisConfig } from '../config/redis.js';
 import { updateStatusField } from '../controllers/notificationDbController.js';
