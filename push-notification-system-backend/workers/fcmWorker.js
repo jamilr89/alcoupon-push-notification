@@ -8,7 +8,8 @@ import notificationReceivers from '../models/sentNotificationsReceivers.model.js
 import {getDeviceData} from "../devicesDatabase.js"
 
 const worker = new Worker('fcm-notifications', async (job) => {
-  if (job.name !== 'send-batch') return;
+
+  if (job.name !== 'send-batch') {console.log("Job is not of type 'send-batch'"); return};
 console.log("Job data: ", JSON.stringify(job.data));
   // 1. CHECK KILL SWITCH
   const isKilled = await redis.get('fcm_kill_switch');
@@ -73,3 +74,6 @@ deviceData&&id?
   }
 }, { connection: redisConfig, concurrency: 10 ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
   lockRenewTime: 60000});
+
+  worker.on('failed', (job, err) => console.error(`Job ${job.id} failed:`, err));
+worker.on('error', (err) => console.error('Worker error:', err));
