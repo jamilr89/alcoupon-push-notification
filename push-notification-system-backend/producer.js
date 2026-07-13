@@ -30,6 +30,7 @@ const jobs = await notificationQueue.getJobs(
 );
 
 jobs.forEach(job => {
+  console.log("job info: ")
   console.log({
     id: job.id,
     name: job.name,
