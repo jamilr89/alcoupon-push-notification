@@ -23,6 +23,21 @@ async function scheduleGlobalBlast(payload) {
     removeOnComplete: true,
   });
   console.log(`Scheduled global blast with job ${JSON.stringify(result)}`);
+const jobs = await notificationQueue.getJobs(
+  ['waiting', 'delayed', 'active', 'completed', 'failed', 'paused'],
+  0,      // start
+  -1      // end (-1 = get all)
+);
+
+jobs.forEach(job => {
+  console.log({
+    id: job.id,
+    name: job.name,
+    data: job.data,
+    scheduledFor: job.timestamp + job.delay ? new Date(job.timestamp + job.delay) : null,
+    attemptsMade: job.attemptsMade,
+  });
+});
   return jobId;
 }
 
