@@ -160,7 +160,7 @@ const filteredRegistrationTokens = (
       return exists ? null : token; // return null if blacklisted
     })
   )
-).filter(token => token !== null); // remove nulls
+).filter(token => {if (token !== null){return '${token}'}}); // remove nulls
   if (filteredRegistrationTokens?.length>0){
       const batches = chunkArray(filteredRegistrationTokens);
       const allResponses = [];

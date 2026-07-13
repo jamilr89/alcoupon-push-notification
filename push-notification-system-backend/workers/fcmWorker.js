@@ -22,7 +22,7 @@ const worker = new Worker('fcm-notifications', async (job) => {
   const {open_type,nid,page_type,link,link_type,title,body,campaign_name,campaign_id,id} = messagePayload;
 
   try {
-  const response = await sendMessageWithObject({tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type,id})
+  const response = await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
    response.allResponses?.forEach(async(resp, idx) => {
       if (!resp.success) {
         console.error(`Error for token ${response?.allTokens[idx]}:`, JSON.stringify(resp));
