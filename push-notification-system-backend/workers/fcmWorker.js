@@ -7,7 +7,12 @@ import blackListedTokens from "../models/blackListedTokens.js"
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 
+
 const worker = new Worker('fcm-send-batch', async (job) => {
+ await mongoose.connect('mongodb://mongo:27017/notification-system-db')
+    // .then(() => console.log('Mongo Connected!'));
+
+
 
   // if (job.name !== 'send-batch') {console.log("Job is not of type 'send-batch'"); return};
 console.log("Job data: ", JSON.stringify(job.data));
