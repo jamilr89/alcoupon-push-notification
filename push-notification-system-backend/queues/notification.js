@@ -5,7 +5,7 @@ const notificationQueue = new Queue('fcm-notifications', {
   connection: redisConfig 
 });
 // console.log("Notification Queue created:", JSON.stringify(notificationQueue));
-const job = await notificationQueue.getJob(notificationQueue?.data?.id);
+// const job = await notificationQueue.getJob(notificationQueue?.data?.id); 
 
 
 

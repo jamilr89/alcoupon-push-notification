@@ -7,9 +7,9 @@ import blackListedTokens from "../models/blackListedTokens.js"
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 
-const worker = new Worker('fcm-notifications', async (job) => {
+const worker = new Worker('fcm-send-batch', async (job) => {
 
-  if (job.name !== 'send-batch') {console.log("Job is not of type 'send-batch'"); return};
+  // if (job.name !== 'send-batch') {console.log("Job is not of type 'send-batch'"); return};
 console.log("Job data: ", JSON.stringify(job.data));
   // 1. CHECK KILL SWITCH
   const isKilled = await redis.get('fcm_kill_switch');

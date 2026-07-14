@@ -1,7 +1,14 @@
-import notificationQueue from './queues/notification.js';
+
 import User from './models/userModel.js';
 import { redis } from './config/redis.js';
 import { updateStatusField } from './controllers/notificationDbController.js';
+import { Queue } from 'bullmq';
+import { redisConfig } from './config/redis.js';
+
+
+const notificationQueue = new Queue('fcm-send-batch', { 
+  connection: redisConfig 
+});
 
 /**
  * STEP 1: The "Scheduler"
