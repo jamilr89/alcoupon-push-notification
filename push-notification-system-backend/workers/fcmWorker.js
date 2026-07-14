@@ -6,11 +6,12 @@ import { updateStatusField } from '../controllers/notificationDbController.js';
 import blackListedTokens from "../models/blackListedTokens.js"
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
+import mongoose from 'mongoose';
 
 
 const worker = new Worker('fcm-send-batch', async (job) => {
- await mongoose.connect('mongodb://mongo:27017/notification-system-db')
-    // .then(() => console.log('Mongo Connected!'));
+ const mongooseConnectionInWorker = await mongoose.connect('mongodb://mongo:27017/notification-system-db')
+console.log('mongooseConnectionInWorker: ' + mongooseConnectionInWorker.connection.readyState);
 
 
 
