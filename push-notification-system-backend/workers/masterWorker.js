@@ -1,6 +1,7 @@
 import {Worker } from 'bullmq';
 import {redisConfig} from '../config/redis.js';
 import { runUserStreaming } from '../producer.js';
+import { QueueEvents } from 'bullmq';
 
 
 const masterWorker = new Worker('fcm-notifications', async (job) => {
@@ -11,6 +12,16 @@ const masterWorker = new Worker('fcm-notifications', async (job) => {
   }
 }, { connection: redisConfig ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
 lockRenewTime: 60000});
+
+const queueEvents = new QueueEvents('fcm-notifications', { connection: redisConfig });
+
+queueEvents.on('added', ({ jobId }) => console.log('ADDED:', jobId));
+queueEvents.on('active', ({ jobId }) => console.log('ACTIVE:', jobId));
+queueEvents.on('completed', ({ jobId }) => console.log('COMPLETED:', jobId));
+queueEvents.on('failed', ({ jobId, failedReason }) => console.log('FAILED:', jobId, failedReason));
+queueEvents.on('stalled', ({ jobId }) => console.log('STALLED:', jobId));
+
+
 console.log("Master worker started, listening on fcm-notifications...");
 masterWorker.on('ready', () => console.log("masterWorker ready"));
 masterWorker.on('error', (err) => console.error("masterWorker error:", err));
