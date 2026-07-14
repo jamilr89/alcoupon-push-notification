@@ -18,9 +18,9 @@ console.log("Job data: ", JSON.stringify(job.data));
     updateStatusField(job.data.messagePayload.id, 'aborted');
     return; // Finish job without sending
   }
-
-  const { tokens, messagePayload } = job.data;
-  const {open_type,nid,page_type,link,link_type,title,body,campaign_name,campaign_id,id} = messagePayload;
+console.log("job data in fcmWorker.js "+JSON.stringify(job))
+  // const { tokens, messagePayload } = job.data;
+  const {open_type,nid,page_type,link,link_type,title,body,campaign_name,campaign_id,id,tokens} = job.data;
 
   try {
   const response = await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
