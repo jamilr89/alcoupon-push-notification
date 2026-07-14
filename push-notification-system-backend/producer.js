@@ -62,6 +62,7 @@ async function stopScheduledBlast(jobId) {
  * This runs ONLY when the scheduled time is reached.
  */
 async function runUserStreaming(payload) {
+  console.log("Running user streaming with payload:", payload);
   const BATCH_SIZE = 1000;
   let batchCounter = 0;
   let currentBatch = [];
@@ -81,8 +82,10 @@ async function runUserStreaming(payload) {
   { $match: { blacklisted: { $size: 0 } } }, // Only keep users not found in blacklist
   { $project: { fcmToken: 1 } }
 ]).cursor();
+console.log("Cursor created for user streaming. Starting to stream users...");
 
   for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
+    console.log("Streaming user with token:", doc.fcmToken);
     currentBatch.push(doc.fcmToken);
 console.log("current batch size "+currentBatch.length)
     if (currentBatch.length === BATCH_SIZE) {
