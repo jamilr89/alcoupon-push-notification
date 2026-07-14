@@ -7,6 +7,7 @@ import { updateStatusField,updateSentCount } from './notificationDbController.js
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 import blackListedTokens from "../models/blackListedTokens.js"
+import mongoose from 'mongoose';
 let serviceAccountPath
  serviceAccountPath= process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
 console.log("service account path "+serviceAccountPath)
