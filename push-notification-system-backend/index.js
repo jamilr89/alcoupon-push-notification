@@ -27,7 +27,7 @@ console.log("before routes")
 
 
 mongoose.connect('mongodb://mongo:27017/notification-system-db')
-    .then(() => console.log('Connected!'));
+    .then(() => console.log('Mongo Connected!'));
 
 
   

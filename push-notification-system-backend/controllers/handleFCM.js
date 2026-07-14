@@ -157,6 +157,8 @@ const filteredRegistrationTokens = (
   await Promise.all(
     registrationToken.map(async (token) => {
       console.log("checking token inside map"+token)
+      console.log("mongoose.connection.readyState: " + mongoose.connection.readyState);
+
       const exists = await blackListedTokens.findOne({ token });
       return exists ? null : token; // return null if blacklisted
     })
