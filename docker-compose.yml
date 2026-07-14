@@ -115,6 +115,8 @@ services:
     build: ./push-notification-system-backend
     command: workers/fcmWorker.js
     restart: always
+    volumes:
+      - ~/.secrets/firebase/alcoupon-webapp-firebase-adminsdk.json:/etc/secrets/firebase/key.json:ro
     depends_on:
       - redis
     env_file: ./push-notification-system-backend/.env
@@ -123,6 +125,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FIREBASE_SERVICE_ACCOUNT_PATH=/etc/secrets/firebase/key.json
 
 
   master-worker:
