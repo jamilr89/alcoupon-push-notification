@@ -156,6 +156,7 @@ const filteredRegistrationTokens = (
   // remove blacklisted tokens that were added last campaign as not available tokens
   await Promise.all(
     registrationToken.map(async (token) => {
+      console.log("checking token inside map"+token)
       const exists = await blackListedTokens.findOne({ token });
       return exists ? null : token; // return null if blacklisted
     })
