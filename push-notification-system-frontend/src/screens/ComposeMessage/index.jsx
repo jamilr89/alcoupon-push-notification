@@ -367,7 +367,7 @@ setLoadingTest(false)
 
 const handleFormSubmit = async(values)=>{
 
-// console.log("values in submit "+JSON.stringify(values))
+console.log("values in submit "+JSON.stringify(values))
 // const tokens=Object.keys(testingDevicesSelectedList)?.map (key=>{if(testingDevicesSelectedList[key])return key}  );
 const tokens = testingDevicesSelectedList;
   // if (

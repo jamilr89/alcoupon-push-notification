@@ -15,9 +15,10 @@ const notificationQueue = new Queue('fcm-send-batch', {
  * Called by your API to put the "Start Signal" into Redis
  */
 async function scheduleGlobalBlast(payload) {
-    const  { time } = payload;
+    const  { time ,languages} = payload;
+    
     const timestamp = new Date(time).getTime();
-  const jobId = `master-blast-${timestamp}`;
+  const jobId = `master-blast-${languages}-${Date.now()}`; // Unique job ID based on timestamp
    console.log("Scheduling global blast at "+time)
    console.log("With payload "+JSON.stringify(payload))
    console.log("delay "+(new Date(time) - Date.now()))
