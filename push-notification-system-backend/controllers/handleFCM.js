@@ -300,7 +300,7 @@ deviceData&&id?
     scheduled: true,
   
   })
-  updateStatusField(id,"scheduled")
+ await updateStatusField(id,"scheduled")
 
 }catch(error){
    console.log( "error in schedule message"+error)
