@@ -81,6 +81,6 @@ deviceData&&id?
   }
 }, { connection: redisConfig, concurrency: 10 ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
   lockRenewTime: 60000});
-queueEvents.on('active', async ({ jobId }) => await updateStatusField(jobId, 'sending'));
+worker.on('active', async ({ jobId }) => await updateStatusField(jobId, 'sending'));
   worker.on('failed',async (job, err) =>{await updateStatusField(jobId, 'failed'); console.error(`Job ${job.id} failed:`, err)});
 worker.on('error', (err) => console.error('Worker error:', err));
