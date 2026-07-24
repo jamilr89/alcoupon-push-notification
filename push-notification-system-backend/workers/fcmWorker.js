@@ -7,7 +7,7 @@ import blackListedTokens from "../models/blackListedTokens.js"
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 import mongoose from 'mongoose';
-import {updateStatusField} from '../controllers/notificationDbController.js'
+// import {updateStatusField} from '../controllers/notificationDbController.js'
 
 
 const worker = new Worker('fcm-send-batch', async (job) => {
