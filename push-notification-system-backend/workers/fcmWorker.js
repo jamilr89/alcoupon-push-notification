@@ -7,6 +7,7 @@ import blackListedTokens from "../models/blackListedTokens.js"
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
 import mongoose from 'mongoose';
+import {updateStatusField} from '../controllers/notificationDbController.js'
 
 
 const worker = new Worker('fcm-send-batch', async (job) => {
@@ -21,7 +22,7 @@ console.log("Job data: ", JSON.stringify(job.data));
   const isKilled = await redis.get('fcm_kill_switch');
   if (isKilled === 'true') {
     console.log("Kill switch active. Aborting batch.");
-    updateStatusField(job.data.messagePayload.id, 'aborted');
+    await updateStatusField(job.data.messagePayload.id, 'aborted');
     return; // Finish job without sending
   }
 console.log("job data in fcmWorker.js "+JSON.stringify(job))
@@ -80,6 +81,6 @@ deviceData&&id?
   }
 }, { connection: redisConfig, concurrency: 10 ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
   lockRenewTime: 60000});
-
-  worker.on('failed', (job, err) => console.error(`Job ${job.id} failed:`, err));
+queueEvents.on('active', ({ jobId }) => await updateStatusField(jobId, 'sending'));
+  worker.on('failed', (job, err) =>{await updateStatusField(jobId, 'failed'); console.error(`Job ${job.id} failed:`, err)});
 worker.on('error', (err) => console.error('Worker error:', err));

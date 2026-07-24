@@ -55,7 +55,7 @@ async function cancelScheduledBlast(jobId) {
   const job = await notificationQueue.getJob(jobId);
   if (job && (await job.getState()) === 'delayed') {
     await job.remove();
-    updateStatusField(job.data.id, 'cancelled');
+    await updateStatusField(job.data.id, 'cancelled');
     return true;
   }
   return false;
@@ -109,7 +109,7 @@ console.log("current batch size "+currentBatch.length)
 
       batchCounter++;
       currentBatch = []; // Clear RAM
-      updateStatusField(payload.id, 'sending');
+      await updateStatusField(payload.id, 'sending');
     }
   }
 
@@ -125,7 +125,7 @@ console.log("current batch size "+currentBatch.length)
     });
   }
 
-  updateStatusField(payload.id, 'completed');
+  await updateStatusField(payload.id, 'completed');
   
   console.log(`Streaming finished. Created ${batchCounter + 1} batches.`);
 }

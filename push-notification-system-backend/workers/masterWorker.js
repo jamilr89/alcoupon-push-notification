@@ -2,6 +2,7 @@ import {Worker } from 'bullmq';
 import {redisConfig} from '../config/redis.js';
 import { runUserStreaming } from '../producer.js';
 import { QueueEvents } from 'bullmq';
+import { updateStatusField } from '../controllers/notificationDbController.js';
 
 
 const masterWorker = new Worker('fcm-notifications', async (job) => {
@@ -15,10 +16,10 @@ lockRenewTime: 60000});
 
 const queueEvents = new QueueEvents('fcm-notifications', { connection: redisConfig });
 
-queueEvents.on('added', ({ jobId }) => console.log('ADDED:', jobId));
+queueEvents.on('added', ({ jobId }) => {await updateStatusField(jobId, 'scheduled'); console.log('ADDED:', jobId)});
 queueEvents.on('active', ({ jobId }) => console.log('ACTIVE:', jobId));
 queueEvents.on('completed', ({ jobId }) => console.log('COMPLETED:', jobId));
-queueEvents.on('failed', ({ jobId, failedReason }) => console.log('FAILED:', jobId, failedReason));
+queueEvents.on('failed', ({ jobId, failedReason }) => {await updateStatusField(jobId, 'failed');console.log('FAILED:', jobId, failedReason)});
 queueEvents.on('stalled', ({ jobId }) => console.log('STALLED:', jobId));
 
 
