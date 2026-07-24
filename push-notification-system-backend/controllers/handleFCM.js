@@ -235,7 +235,7 @@ allResponses.push(...response.responses)
 
 
 
-const schedulePN= ({id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})=>{
+const schedulePN= async({id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})=>{
   
   const cronTime = convertToCronTime(time);
   console.log("crone time "+cronTime)
