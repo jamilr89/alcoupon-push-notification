@@ -1,6 +1,7 @@
 import NotificationModel from '../models/notification.model.js';
 
 async function updateStatusField(id, newValue) {
+  console.log("updateStatusField called with id:", id, "and newValue:", newValue);
   try {
     const doc = await NotificationModel.findById(id); // step 1: get the document
 
