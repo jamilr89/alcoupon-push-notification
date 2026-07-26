@@ -50,9 +50,9 @@ jobs.forEach(job => {
     attemptsMade: job.attemptsMade,
   });
 });
+console.log("All jobs in the queue have been scheduled.");
 
-
-await updateStatusField(jobId, 'scheduled');
+await updateStatusField(payload.id, 'scheduled');
 
   return jobId;
 }
