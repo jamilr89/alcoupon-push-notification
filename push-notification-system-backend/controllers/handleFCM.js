@@ -1,6 +1,6 @@
 import admin from 'firebase-admin';
 import { getMessaging } from "firebase-admin/messaging";
-import cron from 'node-cron'
+// import cron from 'node-cron'
 import { convertToCronTime } from '../utilities.js';
 import { updateStatusField,updateSentCount } from './notificationDbController.js';
 
@@ -237,74 +237,74 @@ allResponses.push(...response.responses)
 
 const schedulePN= async({id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type})=>{
   
-  const cronTime = convertToCronTime(time);
-  console.log("crone time "+cronTime)
-  try{
+//   const cronTime = convertToCronTime(time);
+//   console.log("crone time "+cronTime)
+//   try{
 
-  cron.schedule(cronTime, async() => {
-    console.log("called in crone")
-  //  sendTestMessage(tokens,title,body);
-  let response;
-  // if (open_type)
-  response=await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,time,timezone,open_type,nid,page_type,link,link_type})
-  // console.log("response from scheduled message with object "+JSON.stringify(response))
-//   }
-//   else
-// response= await sendTextMessage({id,tokens,title,body,campaign_name,campaign_id,time,timezone})
-console.log("response from scheduled message "+JSON.stringify(response))
+//   cron.schedule(cronTime, async() => {
+//     console.log("called in crone")
+//   //  sendTestMessage(tokens,title,body);
+//   let response;
+//   // if (open_type)
+//   response=await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,time,timezone,open_type,nid,page_type,link,link_type})
+//   // console.log("response from scheduled message with object "+JSON.stringify(response))
+// //   }
+// //   else
+// // response= await sendTextMessage({id,tokens,title,body,campaign_name,campaign_id,time,timezone})
+// console.log("response from scheduled message "+JSON.stringify(response))
 
-// if (response?.success==false)
-//     {!!id && updateStatusField(id,"failed")}
-    // Response is a message ID string.
-    response.allResponses?.forEach(async(resp, idx) => {
-      if (!resp.success) {
-        console.error(`Error for token ${response?.allTokens[idx]}:`, JSON.stringify(resp));
-        if (resp?.error?.code === "messaging/registration-token-not-registered")
-       { blackListedTokens.create({
-          token:response?.allTokens[idx]
-        })}
-      }
-      else{
-        console.log("response in success "+JSON.stringify(resp))
-        console.log("token in success "+response?.allTokens[idx])
+// // if (response?.success==false)
+// //     {!!id && updateStatusField(id,"failed")}
+//     // Response is a message ID string.
+//     response.allResponses?.forEach(async(resp, idx) => {
+//       if (!resp.success) {
+//         console.error(`Error for token ${response?.allTokens[idx]}:`, JSON.stringify(resp));
+//         if (resp?.error?.code === "messaging/registration-token-not-registered")
+//        { blackListedTokens.create({
+//           token:response?.allTokens[idx]
+//         })}
+//       }
+//       else{
+//         console.log("response in success "+JSON.stringify(resp))
+//         console.log("token in success "+response?.allTokens[idx])
   
       
-      const deviceDataArray=await getDeviceData(response?.allTokens[idx])
-      console.log("device data array "+JSON.stringify(deviceDataArray))
-      const deviceData=deviceDataArray[0]
-console.log("device data "+JSON.stringify(deviceData))
-deviceData&&id?
-      await notificationReceivers.create({
-        fcmId:resp?.messageId,
-        notificationDbId:id,
-        notificationId:campaign_id,
-        notificationName:campaign_name,
-        notificationTime:time,
-        notificationTimezone:timezone,
-        token:response?.allTokens[idx],
-        success:resp?.success,
-        deviceId:deviceData?.device_id,
-        language:deviceData?.language,
-        country:deviceData?.country,
-        platform:deviceData?.device_type,
+//       const deviceDataArray=await getDeviceData(response?.allTokens[idx])
+//       console.log("device data array "+JSON.stringify(deviceDataArray))
+//       const deviceData=deviceDataArray[0]
+// console.log("device data "+JSON.stringify(deviceData))
+// deviceData&&id?
+//       await notificationReceivers.create({
+//         fcmId:resp?.messageId,
+//         notificationDbId:id,
+//         notificationId:campaign_id,
+//         notificationName:campaign_name,
+//         notificationTime:time,
+//         notificationTimezone:timezone,
+//         token:response?.allTokens[idx],
+//         success:resp?.success,
+//         deviceId:deviceData?.device_id,
+//         language:deviceData?.language,
+//         country:deviceData?.country,
+//         platform:deviceData?.device_type,
         
 
 
-      })
-      :
-      console.log("no device data ")
+//       })
+//       :
+//       console.log("no device data ")
     
-    }})
+//     }})
    
-  }, {
-    scheduled: true,
+//   }, {
+//     scheduled: true,
   
-  })
- await updateStatusField(id,"scheduled")
+//   })
+//  await updateStatusField(id,"scheduled")
 
-}catch(error){
-   console.log( "error in schedule message"+error)
-  };
+// }catch(error){
+//    console.log( "error in schedule message"+error)
+//   };
 
 }
 
