@@ -2,7 +2,7 @@
 import User from './models/userModel.js';
 import { redis } from './config/redis.js';
 import { updateStatusField } from './controllers/notificationDbController.js';
-import { Queue } from 'bullmq';
+import { Queue ,QueueEvents} from 'bullmq';
 import { redisConfig } from './config/redis.js';
 
 
