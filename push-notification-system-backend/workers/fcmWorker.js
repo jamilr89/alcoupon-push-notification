@@ -22,7 +22,7 @@ console.log("Job data: ", JSON.stringify(job.data));
   const isKilled = await redis.get('fcm_kill_switch');
   if (isKilled === 'true') {
     console.log("Kill switch active. Aborting batch.");
-    await updateStatusField(job.data.messagePayload.id, 'aborted');
+    await updateStatusField(job.data.messagePayload.id, 'canceled');
     return; // Finish job without sending
   }
 console.log("job data in fcmWorker.js "+JSON.stringify(job))
@@ -75,6 +75,7 @@ deviceData&&id?
         console.log("no device data ")
     
     }})
+    await updateStatusField(job.data.messagePayload.id, 'sending');
     return { success: response };
   } catch (error) {
     throw error; // Retry only if total failure

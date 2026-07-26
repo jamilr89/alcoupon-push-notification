@@ -11,12 +11,7 @@ const notificationQueue = new Queue('fcm-send-batch', {
 });
 
 
-const queueEvents = new QueueEvents('fcm-notifications', { connection: redisConfig });
-queueEvents.on('added', async ({ jobId }) => {await updateStatusField(jobId, 'scheduled'); console.log('ADDED:', jobId)});
-queueEvents.on('active', ({ jobId }) => console.log('ACTIVE:', jobId));
-queueEvents.on('completed', ({ jobId }) => console.log('COMPLETED:', jobId));
-queueEvents.on('failed', async ({ jobId, failedReason }) => {await updateStatusField(jobId, 'failed');console.log('FAILED:', jobId, failedReason)});
-queueEvents.on('stalled', ({ jobId }) => console.log('STALLED:', jobId));
+
 
 /**
  * STEP 1: The "Scheduler"
@@ -55,6 +50,10 @@ jobs.forEach(job => {
     attemptsMade: job.attemptsMade,
   });
 });
+
+
+await updateStatusField(jobId, 'scheduled');
+
   return jobId;
 }
 
@@ -71,6 +70,7 @@ async function cancelScheduledBlast(jobId) {
 
 async function stopScheduledBlast(jobId) {
    await redis.set('fcm_kill_switch', 'true', 'EX', 3600); // 1-hour expiry
+   await updateStatusField(job.data.id, 'cancelled');
    return true;
 }
 /**
@@ -133,7 +133,7 @@ console.log("current batch size "+currentBatch.length)
     });
   }
 
-  await updateStatusField(payload.id, 'completed');
+  // await updateStatusField(payload.id, 'completed');
   
   console.log(`Streaming finished. Created ${batchCounter + 1} batches.`);
 }
