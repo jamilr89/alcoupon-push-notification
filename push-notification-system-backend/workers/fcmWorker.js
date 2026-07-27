@@ -81,6 +81,7 @@ deviceData&&id?
    
     return { success: response };
   } catch (error) {
+    console.error('Error sending batch:', error);
     throw error; // Retry only if total failure
   }
 }, { connection: redisConfig, concurrency: 10 ,lockDuration: 300000, // Tell LockManager the job can safely take up to 5 minutes
