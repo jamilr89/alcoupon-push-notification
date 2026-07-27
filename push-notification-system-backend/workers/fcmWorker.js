@@ -30,8 +30,11 @@ console.log("job data in fcmWorker.js "+JSON.stringify(job))
   const {open_type,nid,page_type,link,link_type,title,body,campaign_name,campaign_id,id,tokens,time,timezone} = job.data;
 
   try {
+ await updateStatusField(job.data.messagePayload.id, 'sending');
   const response = await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
-   response.allResponses?.forEach(async(resp, idx) => {
+   
+  response.allResponses?.forEach(async(resp, idx) => {
+
       if (!resp.success) {
         console.error(`Error for token ${response?.allTokens[idx]}:`, JSON.stringify(resp));
        const error = resp.error.code;
@@ -75,7 +78,7 @@ deviceData&&id?
         console.log("no device data ")
     
     }})
-    await updateStatusField(job.data.messagePayload.id, 'sending');
+   
     return { success: response };
   } catch (error) {
     throw error; // Retry only if total failure
