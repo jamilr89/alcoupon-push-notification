@@ -32,7 +32,7 @@ console.log("job data in fcmWorker.js "+JSON.stringify(job))
   try {
  await updateStatusField(job.data.messagePayload.id, 'sending');
   const response = await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
-   
+   console.log("response in fcmWorker.js "+JSON.stringify(response))
   response.allResponses?.forEach(async(resp, idx) => {
 
       if (!resp.success) {
