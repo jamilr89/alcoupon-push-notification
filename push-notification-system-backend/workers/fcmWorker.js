@@ -22,7 +22,7 @@ console.log("Job data: ", JSON.stringify(job.data));
   const isKilled = await redis.get('fcm_kill_switch');
   if (isKilled === 'true') {
     console.log("Kill switch active. Aborting batch.");
-    await updateStatusField(job.data.messagePayload.id, 'canceled');
+    await updateStatusField(job?.data?.id, 'canceled');
     return; // Finish job without sending
   }
 console.log("job data in fcmWorker.js "+JSON.stringify(job))
@@ -30,7 +30,7 @@ console.log("job data in fcmWorker.js "+JSON.stringify(job))
   const {open_type,nid,page_type,link,link_type,title,body,campaign_name,campaign_id,id,tokens,time,timezone} = job.data;
 
   try {
- await updateStatusField(job.data.messagePayload.id, 'sending');
+ await updateStatusField(job?.data?.id, 'sending');
   const response = await sendMessageWithObject({id,tokens,title,body,campaign_name,campaign_id,open_type,nid,page_type,link,link_type})
    console.log("response in fcmWorker.js "+JSON.stringify(response))
   response.allResponses?.forEach(async(resp, idx) => {
