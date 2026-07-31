@@ -44,6 +44,7 @@ notificationRouter.get('/test',authMiddleWare,AuthorizeRole("admin","sender","su
         try {
             console.log("in send pn ")
             const {tokens,body,title,campaign_name,campaign_id,time,timezone,os,languages,countries,open_type,nid,page_type,link,link_type}=req.query;
+            
             console.log("operating system "+JSON.stringify(os))
             const doc=await NotificationModel.create({
                 title :title,

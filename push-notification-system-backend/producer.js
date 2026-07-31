@@ -4,13 +4,21 @@ import { redis } from './config/redis.js';
 import { updateStatusField } from './controllers/notificationDbController.js';
 import { Queue ,QueueEvents} from 'bullmq';
 import { redisConfig } from './config/redis.js';
+import BlackListedTokens from './models/blackListedTokens.js'
+import {getDevicesTokens} from "../push-notification-system-backend/devicesDatabase.js"
 
 
 const notificationQueue = new Queue('fcm-send-batch', { 
   connection: redisConfig 
 });
 
-
+function chunkArray(arr, size) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}
 
 
 /**
@@ -19,6 +27,12 @@ const notificationQueue = new Queue('fcm-send-batch', {
  */
 async function scheduleGlobalBlast(payload) {
     const  { time ,languages} = payload;
+    getDevicesTokens(payload?.countries,payload?.languages,payload?.os).then(async(tokens)=>{
+      console.log("tokens in scheduleGlobalBlast "+JSON.stringify(tokens))
+      const tokensArray=tokens.map(tokenObj=>tokenObj.gcm_code)
+      console.log("tokens array in scheduleGlobalBlast "+JSON.stringify(tokensArray))
+      payload.tokens=tokensArray
+    })
     
     const timestamp = new Date(time).getTime();
   const jobId = `master-blast-${languages}-${Date.now()}`; // Unique job ID based on timestamp
@@ -34,22 +48,22 @@ async function scheduleGlobalBlast(payload) {
     removeOnComplete: true,
   });
   console.log(`Scheduled global blast with job ${JSON.stringify(result)}`);
-const jobs = await notificationQueue.getJobs(
-  ['waiting', 'delayed', 'active', 'completed', 'failed', 'paused'],
-  0,      // start
-  -1      // end (-1 = get all)
-);
+// const jobs = await notificationQueue.getJobs(
+//   ['waiting', 'delayed', 'active', 'completed', 'failed', 'paused'],
+//   0,      // start
+//   -1      // end (-1 = get all)
+// );
 
-jobs.forEach(job => {
-  console.log("job info: ")
-  console.log({
-    id: job.id,
-    name: job.name,
-    data: job.data,
-    scheduledFor: job.timestamp + job.delay ? new Date(job.timestamp + job.delay) : null,
-    attemptsMade: job.attemptsMade,
-  });
-});
+// jobs.forEach(job => {
+//   console.log("job info: ")
+//   console.log({
+//     id: job.id,
+//     name: job.name,
+//     data: job.data,
+//     scheduledFor: job.timestamp + job.delay ? new Date(job.timestamp + job.delay) : null,
+//     attemptsMade: job.attemptsMade,
+//   });
+// });
 console.log("All jobs in the queue have been scheduled.");
 
 await updateStatusField(payload.id, 'scheduled');
@@ -85,41 +99,71 @@ async function runUserStreaming(payload) {
   const {id,tokens,title,body,time,timezone,campaign_name,campaign_id,os,languages,countries,open_type,nid,page_type,link,link_type}=payload;
 
 
- const cursor = User.aggregate([
-  { $match: { languages: { $in: languages }, countries: { $in: countries }, os: { $in: os } } },
-  {
-    $lookup: {
-      from: 'blacklists', // name of the blacklist collection
-      localField: 'fcmToken',
-      foreignField: 'token',
-      as: 'blacklisted'
-    }
-  },
-  { $match: { blacklisted: { $size: 0 } } }, // Only keep users not found in blacklist
-  { $project: { fcmToken: 1 } }
-]).cursor();
+//  const cursor = User.aggregate([
+//   { $match: { languages: { $in: languages }, countries: { $in: countries }, os: { $in: os } } },
+//   {
+//     $lookup: { 
+//       from: 'blackListedTokens', // name of the blacklist collection
+//       localField: 'fcmToken',
+//       foreignField: 'token',
+//       as: 'blacklisted'
+//     }
+//   },
+//   { $match: { blacklisted: { $size: 0 } } }, // Only keep users not found in blacklist
+//   { $project: { fcmToken: 1 } }
+// ]).cursor();
+
+const blacklistedDocs = await BlackListedTokens.find(
+    { token: { $in: tokens } },
+    { token: 1, _id: 0 }
+  ).lean();
+
+  const blacklistedSet = new Set(blacklistedDocs.map(doc => doc.token));
+
+  // Keep only tokens NOT in the blacklist
+  const validTokens = tokens.filter(token => !blacklistedSet.has(token));
 console.log("Cursor created for user streaming. Starting to stream users...");
 
-  for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
-    console.log("Streaming user with token:", doc.fcmToken);
-    currentBatch.push(doc.fcmToken);
-console.log("current batch size "+currentBatch.length)
-    if (currentBatch.length === BATCH_SIZE) {
-      await notificationQueue.add('send-batch', {
-        tokens: currentBatch,
-      messagePayload: payload,
-      batchId: batchCounter
+//   for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
+//     console.log("Streaming user with token:", doc.fcmToken);
+//     currentBatch.push(doc.fcmToken);
+// console.log("current batch size "+currentBatch.length)
+//     if (currentBatch.length === BATCH_SIZE) {
+//       await notificationQueue.add('send-batch', {
+//         tokens: currentBatch,
+//       messagePayload: payload,
+//       batchId: batchCounter
+//       }, {
+//         // Only retry if the WHOLE batch fails
+//         attempts: 5,
+//         backoff: { type: 'exponential', delay: 5000 }
+//       });
+
+//       batchCounter++;
+//       currentBatch = []; // Clear RAM
+//       await updateStatusField(payload.id, 'sending');
+//     }
+//   }
+
+
+const batches = chunkArray(validTokens, BATCH_SIZE);
+
+await Promise.all(
+  batches.map((batch, i) =>
+    limit(() =>
+      notificationQueue.add('send-batch', {
+        tokens: batch,
+        messagePayload: payload,
+        batchId: i
       }, {
-        // Only retry if the WHOLE batch fails
         attempts: 5,
         backoff: { type: 'exponential', delay: 5000 }
-      });
+      })
+    )
+  )
+);
 
-      batchCounter++;
-      currentBatch = []; // Clear RAM
-      await updateStatusField(payload.id, 'sending');
-    }
-  }
+await updateStatusField(payload.id, 'sending');
 
 
 

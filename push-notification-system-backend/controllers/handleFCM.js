@@ -6,7 +6,7 @@ import { updateStatusField,updateSentCount } from './notificationDbController.js
 
 import notificationReceivers from '../models/sentNotificationsReceivers.model.js';
 import {getDeviceData} from "../devicesDatabase.js"
-import blackListedTokens from "../models/blackListedTokens.js"
+import BlackListedTokens from "../models/blackListedTokens.js"
 import mongoose from 'mongoose';
 let serviceAccountPath
  serviceAccountPath= process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
@@ -160,17 +160,17 @@ const filteredRegistrationTokens = (
       console.log("checking token inside map"+token)
       console.log("mongoose.connection.readyState: " + mongoose.connection.readyState);
 
-      const exists = await blackListedTokens.findOne({ token });
+      const exists = await BlackListedTokens.findOne({ token });
       return exists ? null : token; // return null if blacklisted
     })
   )
 ).filter(token => {if (token !== null){return '${token}'}}); // remove nulls
-  if (filteredRegistrationTokens?.length>0){
-      const batches = chunkArray(filteredRegistrationTokens);
-      const allResponses = [];
-      const allTokens = [];
-for (const batch of batches) {
-  console.log("batch "+JSON.stringify(batch))
+//   if (filteredRegistrationTokens?.length>0){
+//       const batches = chunkArray(filteredRegistrationTokens);
+//       const allResponses = [];
+//       const allTokens = [];
+// for (const batch of batches) {
+  console.log("filtered tokens "+JSON.stringify(filteredRegistrationTokens))
   const deepLink= deepLinkGenerator(open_type,nid,page_type,link,link_type)
   console.log("deep link from generator "+deepLink)
   const message = {
@@ -197,7 +197,7 @@ for (const batch of batches) {
       ...(open_type&&{"deep_link_url":deepLink})
       },
   
-  tokens: batch
+  tokens: filteredRegistrationTokens
   };
   console.log("message in fcm "+JSON.stringify(message))
   // !!id && updateStatusField(id,"sending")
@@ -209,7 +209,7 @@ for (const batch of batches) {
     console.log("response from firebase "+JSON.stringify(response))
     if (response?.successCount&&response?.successCount>0){
       // update status in database
-     !!id && await updateStatusField(id,"completed")
+    
      !!id && await updateSentCount(id , response?.successCount)
       //save fcm messageId in database
 
@@ -220,17 +220,17 @@ allResponses.push(...response.responses)
 
   // .catch(error => console.error("Error sending messages:", error));
     // return response
-    allTokens.push(...batch);
+    allTokens.push(...filteredRegistrationTokens);
   
   console.log("all responses "+JSON.stringify(allResponses))
   return {allResponses,allTokens};
-  }
+  
 }
   // .catch((error) => {
   //   console.log('Error sending message:', JSON.stringify(error));
   //   // !! error?.message&& updateStatusField(id,"failed")
     // return null
-  }
+  // }
 
 
 
