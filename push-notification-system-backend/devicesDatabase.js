@@ -71,8 +71,10 @@ FROM fs_30_mobile_device
 WHERE country = "${country}" AND language = "${language}" AND device_type = "${platform}" ;`
 console.log("query "+query)
 const [rows]=await queryAsync(query) //pool?.query(query)
+
 console.log("devices list "+JSON.stringify(rows))
-return rows
+const tokens = rows.map(row => row.gcm_code);
+return tokens
 }
                   
 
