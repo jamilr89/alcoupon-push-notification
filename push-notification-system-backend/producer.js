@@ -27,7 +27,7 @@ function chunkArray(arr, size) {
  */
 async function scheduleGlobalBlast(payload) {
     const  { time ,languages} = payload;
-    getDevicesTokens(payload?.countries,payload?.languages,payload?.os).then(async(tokens)=>{
+    getDevicesTokens(JSON.parse(payload?.countries),payload?.languages,JSON.parse(payload?.os)).then(async(tokens)=>{
       console.log("tokens in scheduleGlobalBlast "+JSON.stringify(tokens))
       const tokensArray=tokens.map(tokenObj=>tokenObj.gcm_code)
       console.log("tokens array in scheduleGlobalBlast "+JSON.stringify(tokensArray))
