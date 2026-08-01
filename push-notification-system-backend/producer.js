@@ -5,7 +5,7 @@ import { updateStatusField } from './controllers/notificationDbController.js';
 import { Queue ,QueueEvents} from 'bullmq';
 import { redisConfig } from './config/redis.js';
 import BlackListedTokens from './models/blackListedTokens.js'
-import {getDevicesTokens} from "../push-notification-system-backend/devicesDatabase.js"
+import {getDevicesTokens} from "./devicesDatabase.js"
 
 
 const notificationQueue = new Queue('fcm-send-batch', { 
